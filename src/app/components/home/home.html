@@ -1,0 +1,102 @@
+<div>
+  <div class="home">
+      <p>Welcome To 5 <span class="fa fa-star text-warning"></span> Hotel</p>
+      <h1 class="heading">A Best Place To Stay</h1>
+  </div>
+  <!-- Room Types Section -->
+  @if (roomsTypes && roomsTypes.length > 0) {
+  <section class="room-types row g-3">
+    @for (type of roomsTypes; track type.id) {
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm roomTypes">
+        <div class="card-body">
+          <img [src]="type.imageUrl" alt="{{ type.name }}" class="img-fluid mb-3 rounded" />
+          <p>{{type.imageUrl}}</p>
+          <h5 class="card-title">{{ type.description }}</h5>
+          <p class="card-text">
+            <strong>ID:</strong> {{ type.id }} <br>
+            <strong>Price per Night:</strong> ${{ type.pricePerNight }}
+          </p>
+        </div>
+      </div>
+    </div>
+    }
+  </section>
+  } @else {
+  <section>
+    <p>No room types found.</p>
+  </section>
+  }
+
+  <hr>
+
+  <!-- Available Rooms Section -->
+  <div class=" mb-4">
+  <h2 class="mb-3">Search Available Rooms</h2>
+  <div class="row g-3">
+
+    <div class="col-md-4">
+      <label for="checkIn" class="form-label">Check-In Date</label>
+      <input
+      name="from"
+        type="date"
+        id="checkIn"
+        class="form-control"
+        [(ngModel)]="availableParams.from"
+      >
+    </div>
+
+
+    <div class="col-md-4">
+      <label for="checkOut" class="form-label">Check-Out Date</label>
+      <input
+      name="to"
+        type="date"
+        id="checkOut"
+        class="form-control"
+        [(ngModel)]="availableParams.to"
+      >
+    </div>
+
+    <!-- Search Button -->
+    <div class="col-md-4 d-flex align-items-end">
+      <button
+        class="btn btn-primary w-100"
+        (click)="availableRoom()"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Available Rooms Section -->
+@if (availableRooms && availableRooms.length > 0) {
+  <section class="available-rooms row g-3">
+    <h2 class="mb-3">Available Rooms ({{ availableRooms.length }})</h2>
+    @for (r of availableRooms; track r.roomNumber) {
+      <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Room {{ r.roomNumber }}</h5>
+            <p class="card-text">
+              <strong>Type:</strong> {{ r.roomTypeName }} <br>
+              <strong>Description:</strong> {{ r.description }} <br>
+              <strong>Price per Night:</strong> ${{ r.pricePerNight }}
+            </p>
+          </div>
+          <div class="card-footer text-center">
+            <a href="#" class="btn btn-success" [class.disabled]="!r.isAvailable">
+              {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
+            </a>
+          </div>
+        </div>
+      </div>
+    }
+  </section>
+} @else {
+  <section>
+    <p>No available rooms at the moment.</p>
+  </section>
+}
+

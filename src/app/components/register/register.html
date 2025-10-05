@@ -1,0 +1,63 @@
+<form (submit)="addNewUser(addUserForm)" #addUserForm="ngForm">
+  <div class="mb-3">
+    <label for="firstName" class="form-label">First Name</label>
+    <input #firstName="ngModel" required type="text" name="firstName" class="form-control"
+      [(ngModel)]="newUser.firstName" id="firstName" aria-describedby="emailHelp">
+    @if(firstName.invalid && firstName.touched){
+    <div class="alert alert-danger" role="alert">
+      First Name is required
+    </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="lastName" class="form-label">Last Name</label>
+    <input #lastName="ngModel" required type="text" name="lastName" class="form-control" [(ngModel)]="newUser.lastName"
+      id="lastName">
+    @if(lastName.invalid && lastName.touched){
+    <div class="alert alert-danger" role="alert">
+      Last Name is required
+    </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="email" class="form-label">Email Address</label>
+    <input #emailAddress="ngModel" required type="email" name="email" class="form-control" [(ngModel)]="newUser.email"
+      id="email">
+    @if(emailAddress.invalid && emailAddress.touched){
+    <div class="alert alert-danger" role="alert">
+      Email Address is required
+    </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="userName" class="form-label">Username</label>
+    <input #userName="ngModel" required type="text" name="userName" class="form-control" id="userName"
+      [(ngModel)]="newUser.userName">
+    @if(userName.invalid && userName.touched){
+    <div class="alert alert-danger" role="alert">
+      Username is required
+    </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input #password="ngModel" required type="password" class="form-control" name="password" id="password"
+      [(ngModel)]="newUser.password" pattern="^(?=.*[a-z])(?=.*[A-Z]).+$">
+    @if(password.invalid && password.touched){
+    <div class="alert alert-danger" role="alert">
+      Password is required
+    </div>
+    }
+  </div>
+  <div class="mb-3">
+    <label for="role" class="form-label">Role</label>
+    <input #role="ngModel" required type="text" class="form-control" name="role" id="role" [(ngModel)]="newUser.role">
+    @if(role.invalid && role.touched){
+    <div class="alert alert-danger" role="alert">
+      Role is required
+    </div>
+    }
+
+  </div>
+  <button type="submit" [disabled]="addUserForm.invalid" class="btn btn-primary">Submit</button>
+</form>

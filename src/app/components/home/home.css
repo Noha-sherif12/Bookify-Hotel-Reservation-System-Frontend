@@ -1,0 +1,13 @@
+.roomTypes{
+    background-image: url('../../../assets/images/slider-1.jpg');
+    background-size: cover;
+    color: white;
+}
+
+.home{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 80vh;
+}
