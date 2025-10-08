@@ -28,7 +28,7 @@ export class Login {
     this.apiRegister.login(this.loginUser).subscribe({
       next: (response) => {
         console.log('Login successful');
-        this.router.navigate(['/home']);
+        this.router.navigate(['/profile']);
       },
       error: (error) => {
         console.error('Login failed:', error);

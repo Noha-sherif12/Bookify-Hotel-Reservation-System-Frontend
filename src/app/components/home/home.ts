@@ -4,10 +4,13 @@ import { CommonModule } from '@angular/common';
 import { AvailableRooms, Roomtypes } from '../../models/iroom'
 import { FormsModule } from '@angular/forms';
 
+
+
 @Component({
   selector: 'app-home',
+  standalone: true, // Add this line
   imports: [CommonModule, FormsModule],
-  templateUrl: './home.html',
+    templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home implements OnInit{
@@ -25,7 +28,7 @@ export class Home implements OnInit{
     this.roomService.getRoomsTypes().subscribe({
       next: (res) => {
         this.roomsTypes = res;
-       
+
       },
       error: (err) => {
         console.log(err)

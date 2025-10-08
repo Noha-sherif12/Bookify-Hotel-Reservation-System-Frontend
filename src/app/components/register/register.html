@@ -51,7 +51,8 @@
   </div>
   <div class="mb-3">
     <label for="role" class="form-label">Role</label>
-    <input #role="ngModel" required type="text" class="form-control" name="role" id="role" [(ngModel)]="newUser.role">
+    <input #role="ngModel" disabled required type="text" class="form-control" name="role" id="role"
+      [(ngModel)]="newUser.role">
     @if(role.invalid && role.touched){
     <div class="alert alert-danger" role="alert">
       Role is required
