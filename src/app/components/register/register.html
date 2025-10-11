@@ -1,10 +1,10 @@
-<form (submit)="addNewUser(addUserForm)" #addUserForm="ngForm">
+<form (submit)="addNewUser(addUserForm)" #addUserForm="ngForm" class="container">
   <div class="mb-3">
     <label for="firstName" class="form-label">First Name</label>
     <input #firstName="ngModel" required type="text" name="firstName" class="form-control"
       [(ngModel)]="newUser.firstName" id="firstName" aria-describedby="emailHelp">
     @if(firstName.invalid && firstName.touched){
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger mt-3" role="alert">
       First Name is required
     </div>
     }
@@ -14,7 +14,7 @@
     <input #lastName="ngModel" required type="text" name="lastName" class="form-control" [(ngModel)]="newUser.lastName"
       id="lastName">
     @if(lastName.invalid && lastName.touched){
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger mt-3" role="alert">
       Last Name is required
     </div>
     }
@@ -24,7 +24,7 @@
     <input #emailAddress="ngModel" required type="email" name="email" class="form-control" [(ngModel)]="newUser.email"
       id="email">
     @if(emailAddress.invalid && emailAddress.touched){
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger mt-3" role="alert">
       Email Address is required
     </div>
     }
@@ -34,7 +34,7 @@
     <input #userName="ngModel" required type="text" name="userName" class="form-control" id="userName"
       [(ngModel)]="newUser.userName">
     @if(userName.invalid && userName.touched){
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger mt-3" role="alert">
       Username is required
     </div>
     }
@@ -44,8 +44,14 @@
     <input #password="ngModel" required type="password" class="form-control" name="password" id="password"
       [(ngModel)]="newUser.password" pattern="^(?=.*[a-z])(?=.*[A-Z]).+$">
     @if(password.invalid && password.touched){
-    <div class="alert alert-danger" role="alert">
-      Password is required
+    <div class="alert alert-danger mt-3" role="alert">
+      @if(password.errors?.['required']){
+        <p>Password is required</p>
+      }
+      @if(password.errors?.['pattern']){
+        <p>Password must container upper and lower characters</p>
+      }
+
     </div>
     }
   </div>
@@ -54,7 +60,7 @@
     <input #role="ngModel" disabled required type="text" class="form-control" name="role" id="role"
       [(ngModel)]="newUser.role">
     @if(role.invalid && role.touched){
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger mt-3" role="alert">
       Role is required
     </div>
     }
