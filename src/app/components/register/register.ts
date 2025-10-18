@@ -3,6 +3,7 @@ import { IUsers } from '../../models/iusers';
 import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserRegister } from '../../services/user-register';
+import { AuthStateService } from '../../services/auth-state.service';
 import Swal from 'sweetalert2'; // ✅ Correct import for SweetAlert2
 
 @Component({
@@ -25,7 +26,10 @@ export class Register {
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private apiRegister: UserRegister) {}
+  constructor(
+    private apiRegister: UserRegister,
+    private authStateService: AuthStateService
+  ) {}
 
   addNewUser(form: NgForm) {
     this.errorMessage = '';
@@ -49,6 +53,10 @@ export class Register {
           });
 
           this.successMessage = 'Registration successful!';
+          
+          // Notify other components about successful registration/login
+          this.authStateService.setAuthState(true);
+          
           this.resetForm(form);
           this.isLoading = false;
         },

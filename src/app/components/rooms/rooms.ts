@@ -17,6 +17,16 @@ export class Rooms  {
     to: '',
     roomTypeId: 0
   };
+
+  // Define room types with IDs 11-15
+  roomTypes = [
+    { id: 11, name: 'Standard Room' },
+    { id: 12, name: 'Deluxe Room' },
+    { id: 13, name: 'Suite' },
+    { id: 14, name: 'Executive Suite' },
+    { id: 15, name: 'Presidential Suite' }
+  ];
+
   isLoading = false;
   errorMessage = '';
 

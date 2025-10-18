@@ -26,16 +26,20 @@
         class="form-control"
       >
     </div>
-
+    <!-- dropdownlist for room types -->
     <div class="form-group col-md-4">
-      <label for="roomType">Room Type ID:</label>
-      <input
-      name="roomTypeId"
-        type="number"
+      <label for="roomType">Room Type:</label>
+      <select
+        name="roomTypeId"
         id="roomType"
         [(ngModel)]="searchParams.roomTypeId"
         class="form-control"
       >
+        <option value="0">All Room Types</option>
+        <option *ngFor="let roomType of roomTypes" [value]="roomType.id">
+          {{ roomType.name }}
+        </option>
+      </select>
     </div>
 
     <div class="col-12">
