@@ -1,0 +1,101 @@
+<!-- room-search.component.html -->
+
+<div >
+  <h2>Search Available Rooms</h2>
+
+  <!-- Search Form -->
+  <div class="search-form row g-3">
+    <div class="form-group col-md-4">
+      <label for="fromDate">From Date:</label>
+      <input
+      name="from"
+        type="date"
+        id="fromDate"
+        [(ngModel)]="searchParams.from"
+        class="form-control"
+      >
+    </div>
+
+    <div class="form-group col-md-4">
+      <label for="toDate">To Date:</label>
+      <input
+      name="to"
+        type="date"
+        id="toDate"
+        [(ngModel)]="searchParams.to"
+        class="form-control"
+      >
+    </div>
+    <!-- dropdownlist for room types -->
+    <div class="form-group col-md-4">
+      <label for="roomType">Room Type:</label>
+      <select
+        name="roomTypeId"
+        id="roomType"
+        [(ngModel)]="searchParams.roomTypeId"
+        class="form-control"
+      >
+        <option value="0">All Room Types</option>
+        <option *ngFor="let roomType of roomTypes" [value]="roomType.id">
+          {{ roomType.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-12">
+      <button
+        (click)="searchRooms()"
+        [disabled]="isLoading"
+        class="btn btn-primary"
+      >
+        {{ isLoading ? 'Searching...' : 'Search Rooms' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Results -->
+  <div *ngIf="rooms.length > 0" class="results-container mt-4">
+    <h3>
+      Available Rooms ({{ totalCount }})
+      <small>Page {{ pageNumber }} of {{ totalPages }}</small>
+    </h3>
+
+    <div class="row g-3 mt-2">
+      <div class="col-md-4" *ngFor="let r of rooms">
+        <div class="card h-100 shadow-sm">
+        
+
+          <div class="card-body">
+            <h5 class="card-title">Room {{ r.roomNumber }}</h5>
+            <p class="card-text">
+              <strong>Type:</strong> {{ r.roomTypeName }} <br>
+              <strong>Description:</strong> {{ r.description }} <br>
+              <strong>Price per night:</strong> ${{ r.pricePerNight }} <br>
+              <strong>Capacity:</strong> {{ r.capacity }} guests <br>
+              <strong>Status:</strong>
+              <span [ngClass]="{ 'text-success': r.isAvailable, 'text-danger': !r.isAvailable }">
+                {{ r.isAvailable ? 'Available' : 'Not Available' }}
+              </span>
+            </p>
+          </div>
+
+          <div class="card-footer text-center">
+            <button class="btn btn-success" [disabled]="!r.isAvailable">
+              {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="rooms.length === 0 && !isLoading && !errorMessage" class="alert alert-info mt-3">
+    No rooms found. Try different search criteria.
+  </div>
+</div>

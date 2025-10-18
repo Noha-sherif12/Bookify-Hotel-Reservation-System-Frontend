@@ -1,0 +1,62 @@
+.roomTypes{
+    background-image: url('../../../assets/images/slider-1.jpg');
+    background-size: cover;
+    color: white;
+}
+
+
+@font-face {
+  font-family: Roboto ;
+  src: url('/assets/fonts/Roboto/Roboto_Condensed-Regular.ttf');
+}
+
+.home{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 70vh;
+  font-weight: 700;
+  color: white;
+  font-family: Roboto;
+}
+
+.heading{
+  font-size: 80px;
+}
+
+.available-rooms{
+  background-color: white;
+
+  padding: 20px;
+  padding-bottom: 50px;
+  border-radius: 10px;
+  margin-bottom: 50px;
+}
+
+.bg-welcome{
+  background-color: rgb(242, 244, 251);
+  margin-top: 40px;
+}
+
+.bg-welcome h2{
+  font-weight: 700;
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.bg-welcome p{
+  font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #6c757d;
+}
+
+
+.welcome-img{
+  width: 100%;
+  display: block;
+  margin-block: 30px;
+  border-radius: 8px;
+
+}

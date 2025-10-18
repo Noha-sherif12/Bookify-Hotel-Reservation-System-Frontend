@@ -1,0 +1,123 @@
+<div class="main">
+  <div class="home">
+    <p>Welcome To 5 <span class="fa fa-star text-warning"></span> Hotel</p>
+    <h1 class="heading">A Best Place To Stay</h1>
+  </div>
+
+  <div class=" available-rooms">
+
+    <div class="row g-3">
+
+      <div class="col-md-4">
+        <label for="checkIn" class="form-label">Check-In Date</label>
+        <input name="from" type="date" id="checkIn" class="form-control" [(ngModel)]="availableParams.from">
+      </div>
+
+
+      <div class="col-md-4">
+        <label for="checkOut" class="form-label">Check-Out Date</label>
+        <input name="to" type="date" id="checkOut" class="form-control" [(ngModel)]="availableParams.to">
+      </div>
+
+      <!-- Search Button -->
+      <div class="col-md-4 d-flex align-items-end">
+        <button class="btn btn-primary w-100" (click)="availableRoom()">
+          Search
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Rooms Section -->
+  @if (availableRooms && availableRooms.length > 0) {
+  <section class="available-rooms row g-3 container">
+    <h2 class="mb-3">Available Rooms ({{ availableRooms.length }})</h2>
+    @for (r of availableRooms; track r.roomNumber) {
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Room {{ r.roomNumber }}</h5>
+          <p class="card-text">
+            <strong>Type:</strong> {{ r.roomTypeName }} <br>
+            <strong>Description:</strong> {{ r.description }} <br>
+            <strong>Price per Night:</strong> ${{ r.pricePerNight }}
+          </p>
+        </div>
+        <div class="card-footer text-center">
+          <a href="#" class="btn btn-success" [class.disabled]="!r.isAvailable">
+            {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
+          </a>
+        </div>
+      </div>
+    </div>
+    }
+  </section>
+  }
+
+
+  <div class="mt-5">
+    <div id="carouselExample" class="carousel slide w-75 m-auto" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="assets/images/slider-1.jpg" class="d-block w-100" alt="Slide 1">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/images/slider-2.jpg" class="d-block w-100" alt="Slide 2">
+        </div>
+        <div class="carousel-item">
+          <img src="assets/images/slider-3.jpg" class="d-block w-100" alt="Slide 3">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-welcome">
+<div class="d-flex justify-content-center align-items-center container">
+    <div class="container">
+      <h2>Welcome!
+      </h2>
+      <p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind
+        texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean.</p>
+    </div>
+    <div class="ms-5">
+      <img class="welcome-img" src="assets/images/correctpath.jpg" alt="Hero image">
+    </div>
+  </div>
+  </div>
+
+  <!-- Room Types Section -->
+  @if (roomsTypes && roomsTypes.length > 0) {
+  <section class="room-types row g-3">
+    @for (type of roomsTypes; track type.id) {
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm roomTypes">
+        <div class="card-body">
+          <img [src]="type.imageUrl" alt="{{ type.name }}" class="img-fluid mb-3 rounded" />
+          <p>{{type.imageUrl}}</p>
+          <h5 class="card-title">{{ type.description }}</h5>
+          <p class="card-text">
+            <strong>ID:</strong> {{ type.id }} <br>
+            <strong>Price per Night:</strong> ${{ type.pricePerNight }}
+          </p>
+        </div>
+      </div>
+    </div>
+    }
+  </section>
+  } @else {
+  <section>
+    <p>No room types found.</p>
+  </section>
+  }
+
+  <hr>
+
+  <!-- Available Rooms Section -->
