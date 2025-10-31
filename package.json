@@ -29,6 +29,7 @@
     "@angular/platform-browser": "^20.2.0",
     "@angular/router": "^20.2.0",
     "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "font-awesome": "^4.7.0",
     "rxjs": "~7.8.0",
     "sweetalert2": "^11.24.0",

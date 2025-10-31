@@ -1,23 +1,26 @@
-<form (submit)="onLogin(loginUserForm)" #loginUserForm="ngForm">
-  <div class="mb-3">
-    <label for="email" class="form-label">Email Address</label>
-    <input #email="ngModel"  [(ngModel)]="loginUser.email" type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+<div class="container">
+  <form (submit)="onLogin(loginUserForm)" #loginUserForm="ngForm">
+    <div class="mb-3">
+      <label for="email" class="form-label text-white">Email Address</label>
+      <input #email="ngModel" [(ngModel)]="loginUser.email" type="email" name="email" class="form-control" id="email"
+        aria-describedby="emailHelp" required>
       @if(email.invalid && email.touched){
-    <div class="alert alert-danger" role="alert">
-      Email Address is required
+      <div class="alert alert-danger" role="alert">
+        Email Address is required
+      </div>
+      }
     </div>
-    }
-  </div>
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input #password="ngModel"  [(ngModel)]="loginUser.password" type="password" name="password" class="form-control"  id="password" required>
-     @if(password.invalid && password.touched){
-    <div class="alert alert-danger" role="alert">
-      Password is required
+    <div class="mb-3">
+      <label for="password" class="form-label text-white">Password</label>
+      <input #password="ngModel" [(ngModel)]="loginUser.password" type="password" name="password" class="form-control"
+        id="password" required>
+      @if(password.invalid && password.touched){
+      <div class="alert alert-danger" role="alert">
+        Password is required
+      </div>
+      }
     </div>
-    }
-  </div>
 
-  <button type="submit" [disabled]="loginUserForm.invalid" class="btn btn-primary">Submit</button>
-</form>
-
+    <button type="submit" [disabled]="loginUserForm.invalid" class="btn btn-primary">Submit</button>
+  </form>
+</div>

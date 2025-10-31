@@ -1,0 +1,30 @@
+<div class="container">
+  @if (cartItems.length > 0) {
+  <div class="row">
+    <div class="col-md-4">
+      @for (item of cartItems; track item.roomId) {
+      <div class="card">
+        <div class="card-body">
+          <p>{{ item.roomId }}</p>
+          <p>{{item.roomNumber}}</p>
+          <p>{{item.checkInDate}}</p>
+          <p>{{item.checkOutDate}}</p>
+          <p>{{item.numberOfNights}}</p>
+          <p>{{item.pricePerNight}}</p>
+          <p>{{item.roomTypeName}}</p>
+          <p>{{item.totalCost}}</p>
+          <div>
+            <button class="btn btn-warning">-</button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  } @else {
+  <p>Your cart is empty</p>
+  }
+  <div>
+    <button class="btn btn-success">Confirm</button>
+  </div>
+</div>
