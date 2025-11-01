@@ -9,6 +9,7 @@ import { Register } from './components/register/register';
 import { Cart } from './components/cart/cart';
 import { Bookings } from './components/bookings/bookings';
 
+import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
 
 export const routes: Routes = [
   { path: '', redirectTo:'home', pathMatch:'full'},
@@ -19,6 +20,8 @@ export const routes: Routes = [
   { path: 'register', component: Register},
   { path: 'bookings', component: Bookings},
   { path: 'Rooms', component: Rooms},
+  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate:[authGuard]},
   { path: '**', component: NotFound}
+  
 
 ];
