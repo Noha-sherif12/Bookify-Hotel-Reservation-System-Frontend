@@ -51,6 +51,11 @@ export class UserAuth {
   isAuthenticated(): boolean {
     return this.getToken() !== null;
   }
+  isAdmin(): boolean {
+  const user = this.getUser();
+  const roles = user?.roles || [];
+  return roles.includes('Admin');
+}
 
   logout(): void {
     try {

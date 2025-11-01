@@ -1,0 +1,242 @@
+<!-- admin-dashboard.component.html -->
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
+        <div>
+          <h2 class="mb-0">🏨 Bookify Admin Dashboard</h2>
+          <p class="text-muted mb-0">Welcome back, {{ currentAdmin.userName }}! 👑</p>
+        </div>
+        <div>
+          <button class="btn btn-outline-primary btn-sm me-2" (click)="refreshData()" 
+                  [disabled]="isLoading">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+          </button>
+          <button class="btn btn-outline-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="row">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading dashboard data...</p>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div *ngIf="!isLoading" class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                Total Bookings
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ totalBookings }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-calendar-check fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                Pending Approval
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ pendingBookings }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-clock-history fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                Confirmed Bookings
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">{{ confirmedBookings }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-check-circle fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                Total Revenue
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">${{ totalRevenue }}</div>
+            </div>
+            <div class="col-auto">
+              <i class="bi bi-currency-dollar fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading" class="row">
+    <!-- Bookings Table -->
+    <div class="col-xl-8 col-lg-7">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+          <h6 class="m-0 font-weight-bold text-primary">Booking Management</h6>
+          <span class="badge bg-primary">{{ bookings.length }} Total</span>
+        </div>
+        <div class="card-body">
+          <div *ngIf="isBookingsLoading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div *ngIf="!isBookingsLoading && bookings.length === 0" class="text-center py-4 text-muted">
+            <i class="bi bi-calendar-x fa-3x mb-3"></i>
+            <h5>No bookings found</h5>
+            <p>There are no bookings in the system yet.</p>
+          </div>
+
+          <div *ngIf="!isBookingsLoading && bookings.length > 0" class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Room</th>
+                  <th>Customer</th>
+                  <th>Dates</th>
+                  <th>Status</th>
+                  <th>Total</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let booking of bookings">
+                  <td><strong>#{{ booking.id }}</strong></td>
+                  <td>
+                    <div>{{ booking.roomNumber }}</div>
+                    <small class="text-muted">{{ booking.roomTypeName }}</small>
+                  </td>
+                  <td>{{ booking.customerName || 'N/A' }}</td>
+                  <td>
+                    <div><small>Check-in:</small> {{ booking.checkInDate | date:'shortDate' }}</div>
+                    <div><small>Check-out:</small> {{ booking.checkOutDate | date:'shortDate' }}</div>
+                  </td>
+                  <td>
+                    <span [class]="getStatusBadgeClass(booking.status)">
+                      {{ booking.status }}
+                    </span>
+                  </td>
+                  <td><strong>${{ booking.totalCost || 0 }}</strong></td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button *ngIf="booking.status === 'Pending' || booking.status === 'pending'" 
+                              class="btn btn-success btn-sm"
+                              (click)="confirmBooking(booking.id)"
+                              title="Confirm Booking">
+                        <i class="bi bi-check-lg"></i> Confirm
+                      </button>
+                      <button *ngIf="booking.status === 'Pending' || booking.status === 'pending'"
+                              class="btn btn-danger btn-sm"
+                              (click)="rejectBooking(booking.id)"
+                              title="Reject Booking">
+                        <i class="bi bi-x-lg"></i> Reject
+                      </button>
+                      <span *ngIf="booking.status !== 'Pending' && booking.status !== 'pending'" 
+                            class="text-muted small">No actions</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar - Room Information -->
+    <div class="col-xl-4 col-lg-5">
+      <!-- Available Rooms Today -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+          <h6 class="m-0 font-weight-bold text-primary">Available Rooms Today</h6>
+          <span class="badge bg-success">{{ availableRooms.length }}</span>
+        </div>
+        <div class="card-body">
+          <div *ngIf="isRoomsLoading" class="text-center">
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          
+          <div *ngIf="!isRoomsLoading && availableRooms.length === 0" class="text-center text-muted">
+            <p>No available rooms for today</p>
+          </div>
+          
+          <div *ngIf="!isRoomsLoading && availableRooms.length > 0">
+            <div *ngFor="let room of availableRooms" class="mb-2 p-2 border rounded">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>Room {{ room.roomNumber }}</strong>
+                  <div class="small text-muted">{{ room.roomTypeName }}</div>
+                </div>
+                <span class="text-success fw-bold">${{ room.pricePerNight }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Types -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Room Types</h6>
+        </div>
+        <div class="card-body">
+          <div *ngIf="roomTypes.length === 0" class="text-center text-muted">
+            <p>No room types available</p>
+          </div>
+          <div *ngFor="let roomType of roomTypes" class="mb-3 p-2 border rounded">
+            <h6 class="font-weight-bold mb-1">{{ roomType.name }}</h6>
+            <p class="mb-1 small text-muted">{{ roomType.description || 'Standard room' }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="text-success fw-bold">${{ roomType.pricePerNight }}/night</span>
+              <span class="badge bg-primary">Capacity: {{ roomType.capacity }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

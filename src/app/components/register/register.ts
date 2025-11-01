@@ -40,6 +40,8 @@ export class Register {
 
       console.log('📤 Sending registration data:', this.newUser);
 
+    console.log('🎯 Selected role:', this.newUser.role); // Add this line
+
       this.apiRegister.register(this.newUser).subscribe({
         next: (res) => {
           console.log('✅ User registered successfully:', res);
