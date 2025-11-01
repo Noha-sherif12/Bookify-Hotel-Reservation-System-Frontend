@@ -53,7 +53,7 @@ export class Rooms  {
       this.searchParams.roomTypeId
     ).subscribe({
       next: (result: RoomSearchResponse) => {
-      
+
         this.rooms = result.rooms ?? [];
         this.totalCount = result.totalCount;
         this.pageNumber = result.pageNumber;
