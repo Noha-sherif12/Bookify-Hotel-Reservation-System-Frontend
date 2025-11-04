@@ -112,8 +112,11 @@
     <div class="col-xl-8 col-lg-7">
       <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-          <h6 class="m-0 font-weight-bold text-primary">Booking Management</h6>
-          <span class="badge bg-primary">{{ bookings.length }} Total</span>
+          <h6 class="m-0 font-weight-bold text-primary">All Bookings (Admin View)</h6>
+          <div>
+            <span class="badge bg-primary me-2">{{ bookings.length }} Total</span>
+            <span class="badge bg-warning">{{ pendingBookings }} Pending</span>
+          </div>
         </div>
         <div class="card-body">
           <div *ngIf="isBookingsLoading" class="text-center py-4">
@@ -126,6 +129,9 @@
             <i class="bi bi-calendar-x fa-3x mb-3"></i>
             <h5>No bookings found</h5>
             <p>There are no bookings in the system yet.</p>
+            <button class="btn btn-primary btn-sm" (click)="refreshData()">
+              <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
           </div>
 
           <div *ngIf="!isBookingsLoading && bookings.length > 0" class="table-responsive">
@@ -152,6 +158,7 @@
                   <td>
                     <div><small>Check-in:</small> {{ booking.checkInDate | date:'shortDate' }}</div>
                     <div><small>Check-out:</small> {{ booking.checkOutDate | date:'shortDate' }}</div>
+                    <div><small>Nights:</small> {{ booking.numberOfNights }}</div>
                   </td>
                   <td>
                     <span [class]="getStatusBadgeClass(booking.status)">
@@ -161,19 +168,19 @@
                   <td><strong>${{ booking.totalCost || 0 }}</strong></td>
                   <td>
                     <div class="btn-group btn-group-sm">
-                      <button *ngIf="booking.status === 'Pending' || booking.status === 'pending'" 
+                      <button *ngIf="booking.status?.toLowerCase() === 'pending'" 
                               class="btn btn-success btn-sm"
                               (click)="confirmBooking(booking.id)"
                               title="Confirm Booking">
                         <i class="bi bi-check-lg"></i> Confirm
                       </button>
-                      <button *ngIf="booking.status === 'Pending' || booking.status === 'pending'"
+                      <button *ngIf="booking.status?.toLowerCase() === 'pending'"
                               class="btn btn-danger btn-sm"
                               (click)="rejectBooking(booking.id)"
                               title="Reject Booking">
                         <i class="bi bi-x-lg"></i> Reject
                       </button>
-                      <span *ngIf="booking.status !== 'Pending' && booking.status !== 'pending'" 
+                      <span *ngIf="booking.status?.toLowerCase() !== 'pending'" 
                             class="text-muted small">No actions</span>
                     </div>
                   </td>
@@ -211,7 +218,7 @@
                   <strong>Room {{ room.roomNumber }}</strong>
                   <div class="small text-muted">{{ room.roomTypeName }}</div>
                 </div>
-                <span class="text-success fw-bold">${{ room.pricePerNight }}</span>
+                <span class="text-success fw-bold">${{ room.pricePerNight }}/night</span>
               </div>
             </div>
           </div>
@@ -219,7 +226,7 @@
       </div>
 
       <!-- Room Types -->
-      <div class="card shadow mb-4">
+      <div class="card shadow">
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">Room Types</h6>
         </div>

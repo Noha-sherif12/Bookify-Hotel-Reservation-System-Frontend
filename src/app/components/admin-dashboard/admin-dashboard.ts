@@ -3,8 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserAuth } from '../../services/user-auth';
-import { Admin } from '../../services/admin';
+
 import { RoomsService } from '../../services/room-service';
+import { AdminService } from '../../services/admin';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -13,7 +14,7 @@ import { RoomsService } from '../../services/room-service';
   styleUrls: ['./admin-dashboard.css']
 })
 export class AdminDashboardComponent implements OnInit {
-  // Stats
+    // Stats
   totalBookings: number = 0;
   pendingBookings: number = 0;
   confirmedBookings: number = 0;
@@ -34,7 +35,7 @@ export class AdminDashboardComponent implements OnInit {
   currentAdmin: any = {};
 
   constructor(
-    private adminService: Admin,
+    private adminService: AdminService,
     private roomsService: RoomsService,
     private userAuth: UserAuth,
     private router: Router
@@ -53,7 +54,7 @@ export class AdminDashboardComponent implements OnInit {
   loadDashboardData() {
     this.isLoading = true;
     
-    // Load all available data
+    // Load all data
     Promise.all([
       this.loadBookings(),
       this.loadRoomTypes(),
@@ -69,13 +70,15 @@ export class AdminDashboardComponent implements OnInit {
     return new Promise((resolve) => {
       this.adminService.getAllBookings().subscribe({
         next: (data) => {
-          this.bookings = data;
+          this.bookings = data || [];
           this.calculateStats();
           this.isBookingsLoading = false;
+          console.log('✅ Bookings loaded:', this.bookings.length);
           resolve();
         },
         error: (error) => {
-          console.error('Error loading bookings:', error);
+          console.error('❌ Error loading bookings:', error);
+          this.bookings = [];
           this.isBookingsLoading = false;
           resolve();
         }
@@ -87,11 +90,12 @@ export class AdminDashboardComponent implements OnInit {
     return new Promise((resolve) => {
       this.roomsService.getRoomsTypes().subscribe({
         next: (data) => {
-          this.roomTypes = data;
+          this.roomTypes = data || [];
           resolve();
         },
         error: (error) => {
           console.error('Error loading room types:', error);
+          this.roomTypes = [];
           resolve();
         }
       });
@@ -102,18 +106,18 @@ export class AdminDashboardComponent implements OnInit {
     this.isRoomsLoading = true;
     
     return new Promise((resolve) => {
-      // Get available rooms for today and tomorrow
       const today = new Date().toISOString().split('T')[0];
       const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
       
       this.roomsService.getAvailableRooms(today, tomorrow).subscribe({
         next: (rooms) => {
-          this.availableRooms = rooms;
+          this.availableRooms = rooms || [];
           this.isRoomsLoading = false;
           resolve();
         },
         error: (error) => {
           console.error('Error loading available rooms:', error);
+          this.availableRooms = [];
           this.isRoomsLoading = false;
           resolve();
         }
@@ -124,17 +128,17 @@ export class AdminDashboardComponent implements OnInit {
   calculateStats() {
     this.totalBookings = this.bookings.length;
     this.pendingBookings = this.bookings.filter(b => 
-      b.status === 'Pending' || b.status === 'pending'
+      b.status?.toLowerCase() === 'pending'
     ).length;
     this.confirmedBookings = this.bookings.filter(b => 
-      b.status === 'Confirmed' || b.status === 'confirmed'
+      b.status?.toLowerCase() === 'confirmed'
     ).length;
     this.cancelledBookings = this.bookings.filter(b => 
-      b.status === 'Cancelled' || b.status === 'cancelled'
+      b.status?.toLowerCase() === 'cancelled'
     ).length;
     
     this.totalRevenue = this.bookings
-      .filter(b => (b.status === 'Confirmed' || b.status === 'confirmed' || b.status === 'Completed') && b.totalCost)
+      .filter(b => (b.status?.toLowerCase() === 'confirmed' || b.status?.toLowerCase() === 'completed') && b.totalCost)
       .reduce((sum, booking) => sum + (booking.totalCost || 0), 0);
   }
 
@@ -142,12 +146,12 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Are you sure you want to confirm this booking?')) {
       this.adminService.confirmBooking(bookingId).subscribe({
         next: (response) => {
-          console.log('Booking confirmed:', response);
+          console.log('✅ Booking confirmed:', response);
           alert('Booking confirmed successfully!');
           this.loadBookings(); // Reload to update status
         },
         error: (error) => {
-          console.error('Error confirming booking:', error);
+          console.error('❌ Error confirming booking:', error);
           alert('Failed to confirm booking: ' + (error.error?.message || 'Unknown error'));
         }
       });
@@ -164,12 +168,12 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Are you sure you want to reject this booking?')) {
       this.adminService.rejectBooking(bookingId, reason).subscribe({
         next: (response) => {
-          console.log('Booking rejected:', response);
+          console.log('✅ Booking rejected:', response);
           alert('Booking rejected successfully!');
           this.loadBookings(); // Reload to update status
         },
         error: (error) => {
-          console.error('Error rejecting booking:', error);
+          console.error('❌ Error rejecting booking:', error);
           alert('Failed to reject booking: ' + (error.error?.message || 'Unknown error'));
         }
       });
@@ -183,14 +187,11 @@ export class AdminDashboardComponent implements OnInit {
   getStatusBadgeClass(status: string): string {
     const statusLower = status?.toLowerCase();
     switch (statusLower) {
-      case 'confirmed': 
       case 'confirmed': return 'badge bg-success';
-      case 'pending': 
       case 'pending': return 'badge bg-warning text-dark';
-      case 'cancelled': 
       case 'cancelled': return 'badge bg-danger';
-      case 'completed': 
       case 'completed': return 'badge bg-info';
+      case 'rejected': return 'badge bg-secondary';
       default: return 'badge bg-secondary';
     }
   }
