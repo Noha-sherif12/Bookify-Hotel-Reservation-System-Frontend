@@ -1,53 +1,35 @@
 <!-- room-search.component.html -->
 
-<div >
+<div class="container">
   <h2>Search Available Rooms</h2>
 
   <!-- Search Form -->
   <div class="search-form row g-3">
     <div class="form-group col-md-4">
       <label for="fromDate">From Date:</label>
-      <input
-      name="from"
-        type="date"
-        id="fromDate"
-        [(ngModel)]="searchParams.from"
-        class="form-control"
-      >
+      <input name="from" type="date" id="fromDate" [(ngModel)]="searchParams.from" class="form-control">
     </div>
 
     <div class="form-group col-md-4">
       <label for="toDate">To Date:</label>
-      <input
-      name="to"
-        type="date"
-        id="toDate"
-        [(ngModel)]="searchParams.to"
-        class="form-control"
-      >
+      <input name="to" type="date" id="toDate" [(ngModel)]="searchParams.to" class="form-control">
     </div>
     <!-- dropdownlist for room types -->
     <div class="form-group col-md-4">
       <label for="roomType">Room Type:</label>
-      <select
-        name="roomTypeId"
-        id="roomType"
-        [(ngModel)]="searchParams.roomTypeId"
-        class="form-control"
-      >
+      <select name="roomTypeId" id="roomType" [(ngModel)]="searchParams.roomTypeId" class="form-control">
         <option value="0">All Room Types</option>
-        <option *ngFor="let roomType of roomTypes" [value]="roomType.id">
-          {{ roomType.name }}
-        </option>
+        <option>Standard Room</option>
+        <option>Deluxe Room</option>
+        <option>Suite</option>
+        <option>Executive Suite</option>
+        <option>Presidential Suite</option>
+
       </select>
     </div>
 
     <div class="col-12">
-      <button
-        (click)="searchRooms()"
-        [disabled]="isLoading"
-        class="btn btn-primary"
-      >
+      <button (click)="searchRooms()" [disabled]="isLoading" class="btn btn-primary">
         {{ isLoading ? 'Searching...' : 'Search Rooms' }}
       </button>
     </div>
@@ -68,7 +50,7 @@
     <div class="row g-3 mt-2">
       <div class="col-md-4" *ngFor="let r of rooms">
         <div class="card h-100 shadow-sm">
-        
+
 
           <div class="card-body">
             <h5 class="card-title">Room {{ r.roomNumber }}</h5>
