@@ -14,6 +14,7 @@ import { Router, RouterModule } from '@angular/router';
 export class Cart implements OnInit {
   cartItem: ICartItems | null = null;
   isLoading: boolean = false;
+  errorDetails: string = '';
 
   constructor(
     private _BookingRooms: BookingRooms,
@@ -21,20 +22,27 @@ export class Cart implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log('🔧 Cart Component Initialized');
     this.loadCart();
   }
 
   loadCart(): void {
     this.isLoading = true;
+    this.errorDetails = '';
+    
+    console.log('🛒 Attempting to load cart...');
+    
     this._BookingRooms.getCartItems().subscribe({
       next: (res) => {
-        console.log('🛒 Cart response:', res);
+        console.log('✅ Cart API Response:', res);
         
         if (res && typeof res === 'object') {
           if (res.message === 'Cart is empty') {
             this.cartItem = null;
+            console.log('🛒 Cart is empty');
           } else {
             this.cartItem = res as ICartItems;
+            console.log('✅ Cart item found:', this.cartItem);
           }
         } else {
           this.cartItem = res;
@@ -43,15 +51,28 @@ export class Cart implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('❌ Error loading cart:', err);
+        console.error('❌ Cart Error Details:', err);
+        console.error('❌ Error Status:', err.status);
+        console.error('❌ Error Message:', err.message);
+        console.error('❌ Full Error:', err);
+        
         this.isLoading = false;
-        Swal.fire('Error', 'Failed to load cart', 'error');
+        this.errorDetails = `Status: ${err.status} - ${err.message}`;
+        
+        Swal.fire({
+          title: 'Cart Error',
+          text: `Failed to load cart: ${err.status} ${err.statusText}`,
+          icon: 'error',
+          footer: this.errorDetails
+        });
       }
     });
   }
 
   confirmBooking(): void {
     this.isLoading = true;
+    this.errorDetails = '';
+    
     this._BookingRooms.confirmBookingCart().subscribe({
       next: (response) => {
         console.log('✅ Booking confirmed:', response);
@@ -60,8 +81,9 @@ export class Cart implements OnInit {
         this.router.navigate(['/bookings']);
       },
       error: (error) => {
-        console.error('❌ Error confirming booking:', error);
+        console.error('❌ Confirm Booking Error:', error);
         this.isLoading = false;
+        this.errorDetails = `Status: ${error.status} - ${error.message}`;
         Swal.fire('Error', error.error?.message || 'Failed to confirm booking', 'error');
       }
     });
@@ -75,7 +97,8 @@ export class Cart implements OnInit {
         Swal.fire('Cart Cleared', 'Your cart has been cleared', 'info');
       },
       error: (error) => {
-        console.error('Error clearing cart:', error);
+        console.error('❌ Clear Cart Error:', error);
+        this.errorDetails = `Status: ${error.status} - ${error.message}`;
         Swal.fire('Error', 'Failed to clear cart', 'error');
       }
     });
