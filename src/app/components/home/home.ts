@@ -77,18 +77,23 @@ export class Home implements OnInit{
       customerEmail: "customer@example.com"
     };
 
-    this._roomService.addBookingCart(cartData).subscribe({
-      next: (res) => {
-        console.log(res);
-        Swal.fire({
-          title: "Room added successfully",
-          icon: "success",
-        });
-      },
-      error: (err) => {
-        console.error('Add to cart error:', err);
-        Swal.fire('Error', 'Failed to add room to cart', 'error');
-      }
+this._roomService.addBookingCart(cartData).subscribe({
+  next: (res) => {
+    console.log('Response:', res);
+    console.log('Session cookies should be automatically handled by browser');
+    
+    // If you want to see what cookies are currently stored
+    console.log('Document cookies:', document.cookie);
+    
+    Swal.fire({
+      title: "Room added successfully",
+      icon: "success",
     });
+  },
+  error: (err) => {
+    console.error('Add to cart error:', err);
+    Swal.fire('Error', 'Failed to add room to cart', 'error');
+  }
+});
   }
 }

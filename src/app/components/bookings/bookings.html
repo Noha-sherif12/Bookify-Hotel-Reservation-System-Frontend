@@ -1,21 +1,149 @@
-<div class="container">
-  @if ( bookings.length > 0) {
-     <div class="row">
-    <div class="col-md-4" *ngFor="let room of bookings">
-      <div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-            content.</p>
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-      </div>
+<div class="bookings-container">
+  <!-- Header Section -->
+  <div class="bookings-header">
+    <div class="container py-5">
+      <h1 class="mb-2"><i class="bi bi-calendar-check me-3"></i>My Bookings</h1>
+      <p class="text-muted">View and manage your room reservations</p>
     </div>
-
   </div>
 
-  }
+  <!-- Main Content -->
+  <div class="container py-5">
+    <!-- Loading State -->
+    @if (isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading your bookings...</p>
+      </div>
+    }
+    @else {
+      <!-- Filter Tabs -->
+      <div class="filter-tabs mb-4">
+        <button 
+          class="btn btn-filter"
+          [class.active]="activeFilter === 'all'"
+          (click)="setFilter('all')">
+          <i class="bi bi-list me-2"></i>All Bookings
+          <span class="badge badge-count">{{ bookings.length }}</span>
+        </button>
+        <button 
+          class="btn btn-filter"
+          [class.active]="activeFilter === 'confirmed'"
+          (click)="setFilter('confirmed')">
+          <i class="bi bi-check-circle me-2"></i>Confirmed
+          <span class="badge badge-count">{{ confirmedCount }}</span>
+        </button>
+        <button 
+          class="btn btn-filter"
+          [class.active]="activeFilter === 'pending'"
+          (click)="setFilter('pending')">
+          <i class="bi bi-clock me-2"></i>Pending
+          <span class="badge badge-count">{{ pendingCount }}</span>
+        </button>
+        <button 
+          class="btn btn-filter"
+          [class.active]="activeFilter === 'cancelled'"
+          (click)="setFilter('cancelled')">
+          <i class="bi bi-x-circle me-2"></i>Cancelled
+          <span class="badge badge-count">{{ cancelledCount }}</span>
+        </button>
+      </div>
 
+      <!-- Bookings List -->
+      @if (getFilteredBookings().length > 0) {
+        <div class="row g-4">
+          @for (booking of getFilteredBookings(); track booking.id) {
+            <div class="col-md-6 col-lg-4">
+              <div class="booking-card">
+                <div class="booking-card-header">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="booking-id">Booking #{{ booking.id }}</h6>
+                      <p class="booking-room">Room {{ booking.roomNumber }}</p>
+                    </div>
+                    <span [class]="'badge ' + getStatusBadgeClass(booking.status)">
+                      <i [class]="'bi ' + getStatusIcon(booking.status) + ' me-1'"></i>
+                      {{ booking.status }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="booking-card-body">
+                  <!-- Room Type -->
+                  <div class="booking-info-row">
+                    <small class="info-label">Room Type</small>
+                    <p class="info-value">{{ booking.roomTypeName }}</p>
+                  </div>
+
+                  <!-- Guest Info -->
+                  <div class="booking-info-row">
+                    <small class="info-label">Guest Name</small>
+                    <p class="info-value">{{ booking.customerName }}</p>
+                  </div>
+
+                  <!-- Dates -->
+                  <div class="row mt-3 mb-3">
+                    <div class="col-6">
+                      <small class="info-label">Check-in</small>
+                      <p class="info-value">{{ booking.checkInDate | date:'MMM dd, yyyy' }}</p>
+                    </div>
+                    <div class="col-6">
+                      <small class="info-label">Check-out</small>
+                      <p class="info-value">{{ booking.checkOutDate | date:'MMM dd, yyyy' }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Duration and Cost -->
+                  <div class="row">
+                    <div class="col-6">
+                      <small class="info-label">Duration</small>
+                      <p class="info-value">{{ booking.numberOfNights }} night(s)</p>
+                    </div>
+                    <div class="col-6">
+                      <small class="info-label">Total Cost</small>
+                      <p class="info-value text-success fw-bold">${{ booking.totalCost }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="booking-card-footer">
+                  <button 
+                    class="btn btn-sm btn-outline-primary"
+                    (click)="viewBookingDetails(booking)">
+                    <i class="bi bi-eye me-1"></i>View Details
+                  </button>
+                  <button 
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="downloadReceipt(booking)">
+                    <i class="bi bi-download me-1"></i>Receipt
+                  </button>
+                  @if (booking.status !== 'Cancelled') {
+                    <button 
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="cancelBooking(booking)">
+                      <i class="bi bi-trash me-1"></i>Cancel
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+      @else {
+        <!-- Empty State -->
+        <div class="text-center py-5">
+          <i class="bi bi-calendar2-x display-1 text-muted mb-3 d-block"></i>
+          <h5 class="text-muted">No Bookings Found</h5>
+          <p class="text-muted mb-4">You don't have any {{ activeFilter !== 'all' ? activeFilter : '' }} bookings yet</p>
+          <a href="/Rooms" class="btn btn-primary">
+            <i class="bi bi-search me-2"></i>Browse Rooms
+          </a>
+        </div>
+      }
+    }
+  </div>
 </div>

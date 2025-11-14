@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BookingRooms } from '../../services/booking-rooms';
+import { ToastNotificationService } from '../../services/toast-notification.service';
 import Swal from 'sweetalert2';
 import { CommonModule } from '@angular/common';
 import { ICartItems } from '../../models/icart';
@@ -18,6 +19,7 @@ export class Cart implements OnInit {
 
   constructor(
     private _BookingRooms: BookingRooms,
+    private toastService: ToastNotificationService,
     private router: Router
   ) {}
 
@@ -59,14 +61,19 @@ export class Cart implements OnInit {
         this.isLoading = false;
         this.errorDetails = `Status: ${err.status} - ${err.message}`;
         
-        Swal.fire({
-          title: 'Cart Error',
-          text: `Failed to load cart: ${err.status} ${err.statusText}`,
-          icon: 'error',
-          footer: this.errorDetails
-        });
+        this.toastService.error(`Failed to load cart: ${err.status} ${err.statusText}`);
       }
     });
+  }
+
+  proceedToCheckout(): void {
+    if (!this.cartItem) {
+      this.toastService.warning('Your cart is empty');
+      return;
+    }
+
+    // Navigate to checkout
+    this.router.navigate(['/checkout']);
   }
 
   confirmBooking(): void {
@@ -77,30 +84,53 @@ export class Cart implements OnInit {
       next: (response) => {
         console.log('✅ Booking confirmed:', response);
         this.isLoading = false;
-        Swal.fire('Success!', 'Booking confirmed successfully!', 'success');
-        this.router.navigate(['/bookings']);
+        this.toastService.success('Booking confirmed successfully!');
+        Swal.fire({
+          title: 'Success!',
+          text: 'Your booking has been confirmed',
+          icon: 'success',
+          confirmButtonText: 'View Bookings'
+        }).then(() => {
+          this.router.navigate(['/bookings']);
+        });
       },
       error: (error) => {
         console.error('❌ Confirm Booking Error:', error);
         this.isLoading = false;
         this.errorDetails = `Status: ${error.status} - ${error.message}`;
-        Swal.fire('Error', error.error?.message || 'Failed to confirm booking', 'error');
+        this.toastService.error(error.error?.message || 'Failed to confirm booking');
       }
     });
   }
 
   clearCart(): void {
-    this._BookingRooms.clearCart().subscribe({
-      next: (response) => {
-        console.log('🛒 Cart cleared:', response);
-        this.cartItem = null;
-        Swal.fire('Cart Cleared', 'Your cart has been cleared', 'info');
-      },
-      error: (error) => {
-        console.error('❌ Clear Cart Error:', error);
-        this.errorDetails = `Status: ${error.status} - ${error.message}`;
-        Swal.fire('Error', 'Failed to clear cart', 'error');
+    Swal.fire({
+      title: 'Clear Cart?',
+      text: 'Are you sure you want to clear your cart?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, Clear Cart'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._BookingRooms.clearCart().subscribe({
+          next: (response) => {
+            console.log('🛒 Cart cleared:', response);
+            this.cartItem = null;
+            this.toastService.success('Cart has been cleared');
+          },
+          error: (error) => {
+            console.error('❌ Clear Cart Error:', error);
+            this.errorDetails = `Status: ${error.status} - ${error.message}`;
+            this.toastService.error('Failed to clear cart');
+          }
+        });
       }
     });
+  }
+
+  continueShopping(): void {
+    this.router.navigate(['/Rooms']);
   }
 }

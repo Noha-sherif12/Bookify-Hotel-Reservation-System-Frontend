@@ -12,7 +12,7 @@ export class BookingRooms {
 
   constructor(private httpClient: HttpClient) {}
 
-getCartItems(): Observable<ICartItems> { // Changed to single item, not array
+getCartItems(): Observable<ICartItems> { 
     return this.httpClient.get<ICartItems>(`${environment.baseUrl}/api/Bookings/cart`, {
       withCredentials: true // ✅ This preserves session
     });
@@ -32,7 +32,8 @@ getCartItems(): Observable<ICartItems> { // Changed to single item, not array
 
   confirmBookingCart(): Observable<any> {
     return this.httpClient.post<any>(`${environment.baseUrl}/api/Bookings/confirm`, {}, {
-      withCredentials: true
+      withCredentials: true,
+            observe: 'response' // This gives you access to full response including headers
     });
   }
 

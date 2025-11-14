@@ -15,5 +15,7 @@ export interface ICartItems{
   checkInDate: string,
   checkOutDate: string,
   numberOfNights: number,
-  totalCost: number
+  totalCost: number,
+  customerName: string,
+  customerEmail: string
 }

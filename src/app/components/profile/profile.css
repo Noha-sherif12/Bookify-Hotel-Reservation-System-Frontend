@@ -1,0 +1,269 @@
+.profile-container {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.profile-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+}
+
+.nav-tabs-custom {
+  border-bottom: 2px solid #dee2e6;
+  gap: 0;
+
+  .nav-link {
+    color: #495057;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      color: #667eea;
+    }
+
+    &.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+      background-color: transparent;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+    }
+  }
+}
+
+.profile-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    padding: 1.5rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+.profile-info {
+  .info-group {
+    margin-bottom: 1.5rem;
+
+    .info-label {
+      display: block;
+      color: #6c757d;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .info-value {
+      font-size: 1.1rem;
+      color: #212529;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+}
+
+.booking-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+
+    p {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+
+      &.small {
+        margin-bottom: 0.25rem;
+      }
+    }
+
+    hr {
+      margin: 1rem 0;
+    }
+  }
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+
+  &.bg-success {
+    background-color: #28a745 !important;
+  }
+
+  &.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+  }
+
+  &.bg-danger {
+    background-color: #dc3545 !important;
+  }
+
+  &.bg-info {
+    background-color: #17a2b8 !important;
+  }
+
+  &.bg-secondary {
+    background-color: #6c757d !important;
+  }
+}
+
+.btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: white;
+  }
+}
+
+.btn-outline-danger,
+.btn-outline-primary {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.text-success {
+  color: #28a745 !important;
+  font-weight: 600;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 12px;
+  border: none;
+
+  &.alert-info {
+    background-color: #e7f3ff;
+    color: #004085;
+  }
+
+  &.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+}
+
+/* Tab pane animation */
+.tab-pane {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading spinner */
+.spinner-border {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .profile-header {
+    h1 {
+      font-size: 1.75rem;
+    }
+
+    .text-end {
+      text-align: left !important;
+      margin-top: 1rem;
+    }
+  }
+
+  .nav-tabs-custom {
+    .nav-link {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  .booking-card {
+    .card-header h6 {
+      font-size: 0.95rem;
+    }
+
+    .card-body {
+      padding: 1rem;
+    }
+  }
+
+  .info-group {
+    margin-bottom: 1rem;
+  }
+}

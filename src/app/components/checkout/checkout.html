@@ -1,0 +1,190 @@
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <!-- Left Column: Order Summary -->
+    <div class="col-lg-4 mb-4">
+      <div class="card shadow rounded-lg sticky-top" style="top: 20px;">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Order Summary</h5>
+        </div>
+        <div class="card-body">
+          @if (orderSummary) {
+            <div class="mb-3">
+              <small class="text-muted d-block mb-2"><strong>Room Details</strong></small>
+              <div class="ps-3">
+                <p class="mb-2">
+                  <strong>Room #:</strong> {{ orderSummary.roomNumber }}
+                </p>
+                <p class="mb-2">
+                  <strong>Type:</strong> {{ orderSummary.roomType }}
+                </p>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="mb-3">
+              <small class="text-muted d-block mb-2"><strong>Stay Duration</strong></small>
+              <div class="ps-3">
+                <p class="mb-2">
+                  <strong>Check-in:</strong> {{ orderSummary.checkIn }}
+                </p>
+                <p class="mb-2">
+                  <strong>Check-out:</strong> {{ orderSummary.checkOut }}
+                </p>
+                <p class="mb-0">
+                  <strong>Nights:</strong> {{ orderSummary.nights }}
+                </p>
+              </div>
+            </div>
+
+            <hr>
+
+            <div class="pricing-summary">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Price per night:</span>
+                <span>${{ orderSummary.pricePerNight }}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Number of nights:</span>
+                <span>{{ orderSummary.nights }}</span>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-between fs-5 fw-bold">
+                <span>Total Amount:</span>
+                <span class="text-success">${{ orderSummary.totalAmount }}</span>
+              </div>
+            </div>
+          } @else {
+            <div class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Payment Form -->
+    <div class="col-lg-8">
+      <div class="card shadow rounded-lg">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Payment Details</h5>
+        </div>
+        <div class="card-body p-4">
+          @if (paymentError) {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="bi bi-exclamation-circle me-2"></i>
+              {{ paymentError }}
+              <button type="button" class="btn-close" (click)="paymentError = ''"></button>
+            </div>
+          }
+
+          <form (ngSubmit)="processPayment()">
+            <!-- Personal Information Section -->
+            <div class="mb-4">
+              <h6 class="text-primary mb-3"><i class="bi bi-person me-2"></i>Personal Information</h6>
+              
+              <div class="mb-3">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="fullName"
+                  placeholder="John Doe"
+                  [(ngModel)]="formData.fullName"
+                  name="fullName"
+                  required>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                  type="email" 
+                  class="form-control" 
+                  id="email"
+                  placeholder="john@example.com"
+                  [(ngModel)]="formData.email"
+                  name="email"
+                  required>
+              </div>
+
+              <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input 
+                  type="tel" 
+                  class="form-control" 
+                  id="phone"
+                  placeholder="+1 (555) 000-0000"
+                  [(ngModel)]="formData.phone"
+                  name="phone"
+                  required>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Card Information Section -->
+            <div class="mb-4">
+              <h6 class="text-primary mb-3"><i class="bi bi-credit-card me-2"></i>Card Information</h6>
+              
+              <div class="mb-3">
+                <label for="cardholderName" class="form-label">Cardholder Name</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  id="cardholderName"
+                  placeholder="Name on Card"
+                  [(ngModel)]="formData.cardholderName"
+                  name="cardholderName"
+                  required>
+              </div>
+
+              <div class="mb-3">
+                <label for="card-element" class="form-label">Card Details</label>
+                <div id="card-element" class="form-control p-3" style="height: 45px; border: 1px solid #ced4da;"></div>
+                <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 gap-sm-3">
+              <button 
+                type="submit" 
+                class="btn btn-success btn-lg"
+                [disabled]="isProcessing"
+                id="submit-button">
+                @if (isProcessing) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  <span>Processing Payment...</span>
+                } @else {
+                  <i class="bi bi-check-circle me-2"></i>
+                  <span>Complete Payment - ${{ orderSummary?.totalAmount }}</span>
+                }
+              </button>
+
+              <button 
+                type="button" 
+                class="btn btn-outline-secondary"
+                (click)="goBack()"
+                [disabled]="isProcessing">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Cart
+              </button>
+            </div>
+
+            <!-- Security Info -->
+            <div class="mt-4 p-3 bg-light rounded">
+              <small class="text-muted">
+                <i class="bi bi-shield-check text-success me-2"></i>
+                Your payment information is encrypted and secure. We use industry-standard SSL encryption to protect your data.
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

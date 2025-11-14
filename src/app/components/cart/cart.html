@@ -88,8 +88,23 @@
           <!-- Card Footer with Buttons -->
           <div class="card-footer rounded-card-footer bg-light">
             <div class="d-grid gap-2">
-              <!-- Confirm Booking Button -->
+              <!-- Proceed to Checkout Button (Primary) -->
               <button class="btn btn-success rounded-btn btn-icon" 
+                      (click)="proceedToCheckout()" 
+                      [disabled]="isLoading">
+                @if (isLoading) {
+                  <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <span>Processing...</span>
+                } @else {
+                  <i class="bi bi-credit-card me-2"></i>
+                  <span>Proceed to Checkout</span>
+                }
+              </button>
+
+              <!-- Confirm Direct Booking Button (Secondary) -->
+              <button class="btn btn-outline-primary rounded-btn btn-icon" 
                       (click)="confirmBooking()" 
                       [disabled]="isLoading">
                 @if (isLoading) {
@@ -99,7 +114,7 @@
                   <span>Confirming...</span>
                 } @else {
                   <i class="bi bi-check2-circle me-2"></i>
-                  <span>Confirm Booking</span>
+                  <span>Confirm Booking (Without Payment)</span>
                 }
               </button>
               
@@ -109,6 +124,14 @@
                       [disabled]="isLoading">
                 <i class="bi bi-trash me-2"></i>
                 <span>Clear Cart</span>
+              </button>
+
+              <!-- Continue Shopping Button -->
+              <button class="btn btn-outline-secondary rounded-btn btn-icon" 
+                      (click)="continueShopping()"
+                      [disabled]="isLoading">
+                <i class="bi bi-arrow-left me-2"></i>
+                <span>Continue Shopping</span>
               </button>
             </div>
           </div>
