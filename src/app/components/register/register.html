@@ -1,6 +1,6 @@
 <form (submit)="addNewUser(addUserForm)" #addUserForm="ngForm" class="container">
   <div class="mb-3">
-    <label for="firstName" class="form-label">First Name</label>
+    <label for="firstName" class="form-label text-white">First Name</label>
     <input #firstName="ngModel" required type="text" name="firstName" class="form-control"
       [(ngModel)]="newUser.firstName" id="firstName" aria-describedby="emailHelp">
     @if(firstName.invalid && firstName.touched){
@@ -10,7 +10,7 @@
     }
   </div>
   <div class="mb-3">
-    <label for="lastName" class="form-label">Last Name</label>
+    <label for="lastName" class="form-label text-white">Last Name</label>
     <input #lastName="ngModel" required type="text" name="lastName" class="form-control" [(ngModel)]="newUser.lastName"
       id="lastName">
     @if(lastName.invalid && lastName.touched){
@@ -20,7 +20,7 @@
     }
   </div>
   <div class="mb-3">
-    <label for="email" class="form-label">Email Address</label>
+    <label for="email" class="form-label text-white">Email Address</label>
     <input #emailAddress="ngModel" required type="email" name="email" class="form-control" [(ngModel)]="newUser.email"
       id="email">
     @if(emailAddress.invalid && emailAddress.touched){
@@ -30,7 +30,7 @@
     }
   </div>
   <div class="mb-3">
-    <label for="userName" class="form-label">Username</label>
+    <label for="userName" class="form-label text-white">Username</label>
     <input #userName="ngModel" required type="text" name="userName" class="form-control" id="userName"
       [(ngModel)]="newUser.userName">
     @if(userName.invalid && userName.touched){
@@ -40,7 +40,7 @@
     }
   </div>
   <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
+    <label for="password" class="form-label text-white">Password</label>
     <input #password="ngModel" required type="password" class="form-control" name="password" id="password"
       [(ngModel)]="newUser.password" pattern="^(?=.*[a-z])(?=.*[A-Z]).+$">
     @if(password.invalid && password.touched){
@@ -68,8 +68,8 @@
   </div> -->
 
 <div class="mb-3">
-  <label for="role" class="form-label">Role</label>
-  <select class="form-control" id="role" 
+  <label for="role" class="form-label text-white">Role</label>
+  <select class="form-control" id="role"
           [(ngModel)]="newUser.role" name="role" required>
     <option value="Customer">Customer</option>
     <option value="Admin">Admin</option>
