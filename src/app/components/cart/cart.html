@@ -1,5 +1,5 @@
-<div class="container mt-4">
-  <h2 class="mb-4">🛒 Your Reservation Cart</h2>
+<div class="container mt-4 cart-container">
+  <h2 class="mb-4">Your Reservation Cart</h2>
   
   @if (isLoading) {
     <div class="text-center py-5">
@@ -142,7 +142,7 @@
   
   @else {
     <!-- Empty Cart State -->
-    <div class="text-center py-5">
+    <div class="text-center py-5 empty-cart">
       <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
       <h3 class="text-muted">Your cart is empty</h3>
       <p class="text-muted mb-4">You haven't added any rooms to your cart yet.</p>

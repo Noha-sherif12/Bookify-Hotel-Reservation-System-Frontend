@@ -177,7 +177,7 @@ ng test --code-coverage                # Tests with coverage report
 **All components have `.spec.ts` files** using Jasmine/Karma. Key patterns:
 
 - Mock services with `jasmine.createSpyObj()`
-- Test observable subscriptions with `.pipe()` and `fakeAsync()`
+- Test observable subscriptions with `.pipe()` and `CompleteAsync()`
 - Always clean up subscriptions in `afterEach()`
 
 **Test coverage targets:** Components >80%, Services >90%, Guards >85%

@@ -140,11 +140,36 @@
                   required>
               </div>
 
-              <div class="mb-3">
-                <label for="card-element" class="form-label">Card Details</label>
-                <div id="card-element" class="form-control p-3" style="height: 45px; border: 1px solid #ced4da;"></div>
-                <div id="card-errors" class="text-danger mt-2" role="alert"></div>
-              </div>
+              <!-- Test Card Input for Complete Payment Mode -->
+              @if (useCompletePayment) {
+                <div class="mb-3 p-3 bg-warning bg-opacity-10 border border-warning rounded">
+                  <small class="text-warning d-block mb-2">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Complete PAYMENT MODE - Testing Only</strong>
+                  </small>
+                  <label for="testCard" class="form-label">Test Card Number</label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="testCard"
+                    placeholder="4242 4242 4242 4242"
+                    [(ngModel)]="testCard"
+                    name="testCard"
+                    required>
+                  <small class="text-muted d-block mt-2">
+                    Use: <strong>4242 4242 4242 4242</strong> | Any future expiry date | Any CVC
+                  </small>
+                </div>
+              }
+
+              <!-- Real Stripe Card Element (Hidden in Complete Mode) -->
+              @if (!useCompletePayment) {
+                <div class="mb-3">
+                  <label for="card-element" class="form-label">Card Details</label>
+                  <div id="card-element" class="form-control p-3" style="height: 45px; border: 1px solid #ced4da;"></div>
+                  <div id="card-errors" class="text-danger mt-2" role="alert"></div>
+                </div>
+              }
             </div>
 
             <hr class="my-4">

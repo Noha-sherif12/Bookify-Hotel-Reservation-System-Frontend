@@ -3,6 +3,10 @@
   border-radius: 1rem !important;
   border: none;
 }
+.cart-container {
+  color: white;
+}
+
 
 .rounded-card-header {
   border-top-left-radius: 1rem !important;
