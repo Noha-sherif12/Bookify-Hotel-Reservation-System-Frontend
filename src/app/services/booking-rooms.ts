@@ -12,35 +12,37 @@ export class BookingRooms {
 
   constructor(private httpClient: HttpClient) {}
 
-  getCartItems():Observable<ICartItems[]>{
-    return this.httpClient.get<ICartItems[]>(`${environment.baseUrl}/api/Bookings/cart`)
+getCartItems(): Observable<ICartItems> { 
+    return this.httpClient.get<ICartItems>(`${environment.baseUrl}/api/Bookings/cart`, {
+      withCredentials: true // ✅ This preserves session
+    });
   }
 
-  getAllBookings():Observable<IBookings[]>{
-     return this.httpClient.get<IBookings[]>(`${environment.baseUrl}/api/Bookings/Bookings`)
+  getAllBookings(): Observable<IBookings[]> {
+    return this.httpClient.get<IBookings[]>(`${environment.baseUrl}/api/Bookings/Bookings`, {
+      withCredentials: true
+    });
   }
 
-  getBookingById(id:number):Observable<IBookings[]>{
-     return this.httpClient.get<IBookings[]>(`${environment.baseUrl}/api/Bookings/${id}`)
+  addBookingCart(cartData: IAddRoom): Observable<any> {
+    return this.httpClient.post<any>(`${environment.baseUrl}/api/Bookings/cart`, cartData, {
+      withCredentials: true // ✅ Important for session
+    });
   }
 
-  getBookingStatusId(statusId:number):Observable<string>{
-     return this.httpClient.get<string>(`${environment.baseUrl}/api/Bookings/${statusId}/status`)
+  confirmBookingCart(): Observable<any> {
+    return this.httpClient.post<any>(`${environment.baseUrl}/api/Bookings/confirm`, {}, {
+      withCredentials: true,
+            observe: 'response' // This gives you access to full response including headers
+    });
   }
 
-  deleteBookingCart(){
-
+  clearCart(): Observable<any> {
+    return this.httpClient.delete<any>(`${environment.baseUrl}/api/Bookings/cart`, {
+      withCredentials: true
+    });
   }
-
-  addBookingCart(cartData: IAddRoom){
-    return this.httpClient.post<IAddRoom>(`${environment.baseUrl}/api/Bookings/cart`, cartData
-
-    )
-  }
-
-  confirmBookingCart(){
-
-  }
+ 
 
   cancelBookingById(){
 

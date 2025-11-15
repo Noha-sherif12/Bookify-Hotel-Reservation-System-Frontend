@@ -1,1 +1,258 @@
-<p>profile works!</p>
+<div class="profile-container">
+  <!-- Header Section -->
+  <div class="profile-header">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="mb-0"><i class="bi bi-person-circle me-3"></i>My Profile</h1>
+          <p class="text-muted mt-2">Manage your account and view booking history</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <button class="btn btn-outline-light" (click)="editProfile()">
+            <i class="bi bi-pencil me-2"></i>Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container py-5">
+    <!-- Tab Navigation -->
+    <ul class="nav nav-tabs nav-tabs-custom mb-4" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button 
+          class="nav-link"
+          [class.active]="activeTab === 'profile'"
+          (click)="switchTab('profile')"
+          type="button">
+          <i class="bi bi-person me-2"></i>Profile Information
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button 
+          class="nav-link"
+          [class.active]="activeTab === 'upcoming'"
+          (click)="switchTab('upcoming')"
+          type="button">
+          <i class="bi bi-calendar-check me-2"></i>
+          Upcoming Bookings
+          <span class="badge bg-info ms-2" *ngIf="upcomingBookings.length > 0">{{ upcomingBookings.length }}</span>
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button 
+          class="nav-link"
+          [class.active]="activeTab === 'past'"
+          (click)="switchTab('past')"
+          type="button">
+          <i class="bi bi-calendar-x me-2"></i>
+          Past Bookings
+          <span class="badge bg-secondary ms-2" *ngIf="pastBookings.length > 0">{{ pastBookings.length }}</span>
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    @if (isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading your profile...</p>
+      </div>
+    } @else {
+      <!-- Profile Information Tab -->
+      @if (activeTab === 'profile') {
+        <div class="tab-pane fade show active" role="tabpanel">
+          <div class="row">
+            <div class="col-md-8 mx-auto">
+              <div class="card shadow-sm profile-card">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i>Personal Details</h5>
+                </div>
+                <div class="card-body p-4">
+                  @if (userProfile) {
+                    <div class="profile-info">
+                      <div class="row mb-4">
+                        <div class="col-md-6">
+                          <div class="info-group">
+                            <label class="info-label">Full Name</label>
+                            <p class="info-value">{{ userProfile.fullName || userProfile.firstName + ' ' + userProfile.lastName || 'N/A' }}</p>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="info-group">
+                            <label class="info-label">Email Address</label>
+                            <p class="info-value">{{ userProfile.email || 'N/A' }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-4">
+                        <div class="col-md-6">
+                          <div class="info-group">
+                            <label class="info-label">Phone Number</label>
+                            <p class="info-value">{{ userProfile.phoneNumber || userProfile.phone || 'N/A' }}</p>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="info-group">
+                            <label class="info-label">Member Since</label>
+                            <p class="info-value">{{ userProfile.createdAt ? (userProfile.createdAt | date:'longDate') : 'N/A' }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      @if (userProfile.roles && userProfile.roles.length > 0) {
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="info-group">
+                              <label class="info-label">Account Type</label>
+                              <p class="info-value">
+                                @for (role of userProfile.roles; track role) {
+                                  <span class="badge bg-secondary me-2">{{ role }}</span>
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  } @else {
+                    <div class="alert alert-warning">
+                      <i class="bi bi-exclamation-triangle me-2"></i>
+                      Could not load profile information
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Upcoming Bookings Tab -->
+      @if (activeTab === 'upcoming') {
+        <div class="tab-pane fade show active" role="tabpanel">
+          @if (upcomingBookings.length > 0) {
+            <div class="row">
+              @for (booking of upcomingBookings; track booking.id) {
+                <div class="col-md-6 mb-4">
+                  <div class="card booking-card shadow-sm">
+                    <div class="card-header bg-gradient-success text-white">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Room {{ booking.roomNumber }}</h6>
+                        <span [class]="'badge ' + getStatusBadgeClass(booking.status)">
+                          <i [class]="'bi ' + getStatusIcon(booking.status) + ' me-1'"></i>
+                          {{ booking.status }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <p class="mb-2">
+                        <strong>Type:</strong> {{ booking.roomTypeName }}
+                      </p>
+                      <p class="mb-2">
+                        <strong>Guest:</strong> {{ booking.customerName }}
+                      </p>
+                      <div class="row mb-3">
+                        <div class="col-6">
+                          <p class="small text-muted mb-1">Check-in</p>
+                          <p class="fw-bold">{{ booking.checkInDate | date:'MMM dd, yyyy' }}</p>
+                        </div>
+                        <div class="col-6">
+                          <p class="small text-muted mb-1">Check-out</p>
+                          <p class="fw-bold">{{ booking.checkOutDate | date:'MMM dd, yyyy' }}</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <p class="mb-0 small text-muted">Total Cost</p>
+                          <p class="mb-0 h5 text-success">${{ booking.totalCost }}</p>
+                        </div>
+                        <button 
+                          class="btn btn-outline-danger btn-sm"
+                          (click)="cancelBooking(booking)">
+                          <i class="bi bi-trash me-1"></i>Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="alert alert-info text-center py-5">
+              <i class="bi bi-calendar2-check display-1 mb-3 d-block"></i>
+              <h5>No Upcoming Bookings</h5>
+              <p class="mb-0">You don't have any upcoming reservations</p>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Past Bookings Tab -->
+      @if (activeTab === 'past') {
+        <div class="tab-pane fade show active" role="tabpanel">
+          @if (pastBookings.length > 0) {
+            <div class="row">
+              @for (booking of pastBookings; track booking.id) {
+                <div class="col-md-6 mb-4">
+                  <div class="card booking-card shadow-sm opacity-75">
+                    <div class="card-header bg-secondary text-white">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Room {{ booking.roomNumber }}</h6>
+                        <span [class]="'badge ' + getStatusBadgeClass(booking.status)">
+                          <i [class]="'bi ' + getStatusIcon(booking.status) + ' me-1'"></i>
+                          {{ booking.status }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="card-body">
+                      <p class="mb-2">
+                        <strong>Type:</strong> {{ booking.roomTypeName }}
+                      </p>
+                      <p class="mb-2">
+                        <strong>Guest:</strong> {{ booking.customerName }}
+                      </p>
+                      <div class="row mb-3">
+                        <div class="col-6">
+                          <p class="small text-muted mb-1">Check-in</p>
+                          <p class="fw-bold">{{ booking.checkInDate | date:'MMM dd, yyyy' }}</p>
+                        </div>
+                        <div class="col-6">
+                          <p class="small text-muted mb-1">Check-out</p>
+                          <p class="fw-bold">{{ booking.checkOutDate | date:'MMM dd, yyyy' }}</p>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <p class="mb-0 small text-muted">Total Cost</p>
+                          <p class="mb-0 h5">${{ booking.totalCost }}</p>
+                        </div>
+                        <button 
+                          class="btn btn-outline-primary btn-sm"
+                          (click)="downloadReceipt(booking)">
+                          <i class="bi bi-download me-1"></i>Receipt
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="alert alert-info text-center py-5">
+              <i class="bi bi-clock-history display-1 mb-3 d-block"></i>
+              <h5>No Past Bookings</h5>
+              <p class="mb-0">You haven't completed any bookings yet</p>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

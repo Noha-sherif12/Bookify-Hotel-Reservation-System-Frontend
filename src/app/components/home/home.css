@@ -1,7 +1,9 @@
 .roomTypes{
-    background-image: url('../../../assets/images/slider-1.jpg');
+    /* background-image: url('../../../assets/images/slider-1.jpg'); */
     background-size: cover;
-    color: white;
+    color: black;
+    text-align: center;
+    height: 150px;
 }
 
 
@@ -60,3 +62,60 @@
   border-radius: 8px;
 
 }
+
+.room{
+  position: relative;
+  overflow: hidden;
+}
+.room .room-content{
+  background-color: rgba(0, 0, 0, .7);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+
+  transition: opacity .5s, transform .5s;
+
+}
+
+
+.room .room-content h3{
+  transform: translate(100%);
+  transition: transform 1s;
+}
+
+.room .room-content p{
+  transform: translate(100%);
+  transition: transform 1s;
+}
+
+.room:hover .room-content h3{
+   background-color: #333;
+  padding: 10px;
+  transform: translateX(0);
+}
+
+.room:hover .room-content p{
+
+  transform: translateX(0);
+}
+
+.room:hover .room-content{
+ opacity: 1;
+ transform: rotate(360deg);
+}
+
+.room img{
+  transition: transform 1s .5s;
+}
+
+
+.room:hover img{
+  transform: scale(1.3);
+}
+
+
+
+

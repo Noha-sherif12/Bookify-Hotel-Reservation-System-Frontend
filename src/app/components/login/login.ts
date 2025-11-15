@@ -106,7 +106,7 @@ export class Login {
         this.router.navigate(['/admin/dashboard']);
       } else {
         console.log('🎯 User is Customer - redirecting to profile');
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/home']);
       }
     },
     error: (error) => {

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { UserRegister } from '../../services/user-register';
 import { AuthStateService } from '../../services/auth-state.service';
 import Swal from 'sweetalert2'; // ✅ Correct import for SweetAlert2
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +29,8 @@ export class Register {
 
   constructor(
     private apiRegister: UserRegister,
-    private authStateService: AuthStateService
+    private authStateService: AuthStateService,
+    private router: Router
   ) {}
 
   addNewUser(form: NgForm) {
@@ -52,7 +54,9 @@ export class Register {
             text: 'Registration completed successfully!',
             icon: 'success',
             confirmButtonText: 'Continue'
-          });
+          }).then(() => {
+    this.router.navigate(['/login']);   // ✅ Redirect to /login after clicking OK
+  });
 
           this.successMessage = 'Registration successful!';
           

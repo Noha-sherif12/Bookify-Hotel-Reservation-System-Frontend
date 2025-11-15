@@ -1,0 +1,54 @@
+/* cart.css */
+.rounded-card {
+  border-radius: 1rem !important;
+  border: none;
+}
+.cart-container {
+  color: white;
+}
+
+
+.rounded-card-header {
+  border-top-left-radius: 1rem !important;
+  border-top-right-radius: 1rem !important;
+  border: none;
+}
+
+.rounded-card-footer {
+  border-bottom-left-radius: 1rem !important;
+  border-bottom-right-radius: 1rem !important;
+  border: none;
+}
+
+.rounded-btn {
+  border-radius: 0.75rem !important;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.btn-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Card hover effect */
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+/* Bootstrap icon sizing */
+.bi {
+  font-size: 1.1rem;
+}

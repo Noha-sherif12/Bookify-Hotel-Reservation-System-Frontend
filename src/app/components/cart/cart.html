@@ -1,30 +1,155 @@
-<div class="container">
-  @if (cartItems.length > 0) {
-  <div class="row">
-    <div class="col-md-4">
-      @for (item of cartItems; track item.roomId) {
-      <div class="card">
-        <div class="card-body">
-          <p>{{ item.roomId }}</p>
-          <p>{{item.roomNumber}}</p>
-          <p>{{item.checkInDate}}</p>
-          <p>{{item.checkOutDate}}</p>
-          <p>{{item.numberOfNights}}</p>
-          <p>{{item.pricePerNight}}</p>
-          <p>{{item.roomTypeName}}</p>
-          <p>{{item.totalCost}}</p>
-          <div>
-            <button class="btn btn-warning">-</button>
+<div class="container mt-4 cart-container">
+  <h2 class="mb-4">Your Reservation Cart</h2>
+  
+  @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2">Loading cart...</p>
+    </div>
+  } 
+  
+  @else if (cartItem) {
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow rounded-card">
+          <div class="card-header bg-primary text-white rounded-card-header">
+            <h5 class="card-title mb-0">
+              <i class="bi bi-cart-check me-2"></i>
+              Room Reservation
+            </h5>
+          </div>
+          
+          <div class="card-body">
+            <!-- Room Details -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <strong class="text-muted">Room Number:</strong>
+              </div>
+              <div class="col-6">
+                <strong>{{ cartItem.roomNumber }}</strong>
+                <small class="text-muted d-block">({{ cartItem.roomTypeName }})</small>
+              </div>
+            </div>
+            
+            <!-- Dates -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <strong class="text-muted">Check-in Date:</strong>
+              </div>
+              <div class="col-6">
+                {{ cartItem.checkInDate | date:'fullDate' }}
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-6">
+                <strong class="text-muted">Check-out Date:</strong>
+              </div>
+              <div class="col-6">
+                {{ cartItem.checkOutDate | date:'fullDate' }}
+              </div>
+            </div>
+            
+            <!-- Stay Details -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <strong class="text-muted">Duration:</strong>
+              </div>
+              <div class="col-6">
+                {{ cartItem.numberOfNights }} night(s)
+              </div>
+            </div>
+            
+            <!-- Pricing -->
+            <div class="row mb-3">
+              <div class="col-6">
+                <strong class="text-muted">Price per night:</strong>
+              </div>
+              <div class="col-6">
+                ${{ cartItem.pricePerNight }}
+              </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <!-- Total Cost -->
+            <div class="row">
+              <div class="col-6">
+                <strong class="h5">Total Cost:</strong>
+              </div>
+              <div class="col-6">
+                <strong class="h4 text-success">${{ cartItem.totalCost }}</strong>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card Footer with Buttons -->
+          <div class="card-footer rounded-card-footer bg-light">
+            <div class="d-grid gap-2">
+              <!-- Proceed to Checkout Button (Primary) -->
+              <button class="btn btn-success rounded-btn btn-icon" 
+                      (click)="proceedToCheckout()" 
+                      [disabled]="isLoading">
+                @if (isLoading) {
+                  <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <span>Processing...</span>
+                } @else {
+                  <i class="bi bi-credit-card me-2"></i>
+                  <span>Proceed to Checkout</span>
+                }
+              </button>
+
+              <!-- Confirm Direct Booking Button (Secondary) -->
+              <button class="btn btn-outline-primary rounded-btn btn-icon" 
+                      (click)="confirmBooking()" 
+                      [disabled]="isLoading">
+                @if (isLoading) {
+                  <div class="spinner-border spinner-border-sm me-2" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <span>Confirming...</span>
+                } @else {
+                  <i class="bi bi-check2-circle me-2"></i>
+                  <span>Confirm Booking (Without Payment)</span>
+                }
+              </button>
+              
+              <!-- Clear Cart Button -->
+              <button class="btn btn-outline-danger rounded-btn btn-icon" 
+                      (click)="clearCart()"
+                      [disabled]="isLoading">
+                <i class="bi bi-trash me-2"></i>
+                <span>Clear Cart</span>
+              </button>
+
+              <!-- Continue Shopping Button -->
+              <button class="btn btn-outline-secondary rounded-btn btn-icon" 
+                      (click)="continueShopping()"
+                      [disabled]="isLoading">
+                <i class="bi bi-arrow-left me-2"></i>
+                <span>Continue Shopping</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      }
     </div>
-  </div>
-  } @else {
-  <p>Your cart is empty</p>
+  } 
+  
+  @else {
+    <!-- Empty Cart State -->
+    <div class="text-center py-5 empty-cart">
+      <i class="bi bi-cart-x display-1 text-muted mb-3"></i>
+      <h3 class="text-muted">Your cart is empty</h3>
+      <p class="text-muted mb-4">You haven't added any rooms to your cart yet.</p>
+      <button class="btn btn-primary rounded-btn btn-icon" routerLink="/home">
+        <i class="bi bi-search me-2"></i>
+        <span>Browse Available Rooms</span>
+      </button>
+    </div>
   }
-  <div>
-    <button class="btn btn-success">Confirm</button>
-  </div>
 </div>

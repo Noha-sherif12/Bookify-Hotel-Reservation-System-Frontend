@@ -82,6 +82,39 @@
     </div>
   </div>
 
+  <div class="room-description d-flex justify-content-center align-items-center m-4">
+    <div class="room m-2">
+      <div>
+        <img src="assets/images/slider-6.jpg" class="w-100" alt="room image"/>
+      </div>
+      <div class="text-white text-center room-content">
+        <h3>Single Room</h3>
+      <p>90$ / PER NIGHG</p>
+      </div>
+
+    </div>
+      <div class="room m-2">
+      <div>
+        <img src="assets/images/slider-5.jpg" class="w-100" alt="room image"/>
+      </div>
+      <div class="text-white text-center room-content">
+          <h3>Family Room</h3>
+      <p>120$ / PER NIGHG</p>
+      </div>
+
+    </div>
+      <div class="room m-2">
+      <div>
+        <img src="assets/images/slider-4.jpg" class="w-100" alt="room image"/>
+      </div>
+      <div class="text-white text-center room-content">
+        <h3>Presidental Room</h3>
+      <p>250$ / PER NIGHG</p>
+      </div>
+
+    </div>
+  </div>
+
   <div class="bg-welcome">
 <div class="d-flex justify-content-center align-items-center container">
     <div class="container">
@@ -98,10 +131,10 @@
 
   <!-- Room Types Section -->
   @if (roomsTypes && roomsTypes.length > 0) {
-  <section class="room-types row g-3">
+  <section class="room-types row g-3 mt-3">
     @for (type of roomsTypes; track type.id) {
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm roomTypes">
+      <div class="card  shadow-sm roomTypes">
         <div class="card-body">
           <p>{{type.imageUrl}}</p>
           <h5 class="card-title">{{ type.description }}</h5>

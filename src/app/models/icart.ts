@@ -7,6 +7,7 @@ export interface IAddRoom{
 }
 
 export interface ICartItems{
+  message: string
   roomId: number,
   roomNumber: string,
   roomTypeName: string,
@@ -14,5 +15,7 @@ export interface ICartItems{
   checkInDate: string,
   checkOutDate: string,
   numberOfNights: number,
-  totalCost: number
+  totalCost: number,
+  customerName: string,
+  customerEmail: string
 }
