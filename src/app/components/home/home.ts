@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; // Import Router
 import { RoomsService } from '../../services/room-service';
 import { CommonModule } from '@angular/common';
 import { AvailableRooms, Roomtypes } from '../../models/iroom'
@@ -7,14 +8,11 @@ import { BookingRooms } from '../../services/booking-rooms';
 import Swal from 'sweetalert2';
 import { IAddRoom } from '../../models/icart';
 
-
-
-
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, FormsModule],
-    templateUrl: './home.html',
+  templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home implements OnInit{
@@ -25,10 +23,14 @@ export class Home implements OnInit{
     to: '',
   };
 
-
   selectedRoomId: number | null = null;
 
-  constructor(private roomService: RoomsService, private _roomService: BookingRooms) {}
+  // Add Router to constructor
+  constructor(
+    private roomService: RoomsService, 
+    private _roomService: BookingRooms,
+    private router: Router // Inject Router
+  ) {}
 
   ngOnInit(): void {
     this.roomService.getRoomsTypes().subscribe({
@@ -39,7 +41,6 @@ export class Home implements OnInit{
         console.log(err)
       }
     });
-
   }
 
   availableRoom(): void {
@@ -77,23 +78,33 @@ export class Home implements OnInit{
       customerEmail: "customer@example.com"
     };
 
-this._roomService.addBookingCart(cartData).subscribe({
-  next: (res) => {
-    console.log('Response:', res);
-    console.log('Session cookies should be automatically handled by browser');
+    this._roomService.addBookingCart(cartData).subscribe({
+      next: (res) => {
+        console.log('Response:', res);
+        console.log('Session cookies should be automatically handled by browser');
 
-    // If you want to see what cookies are currently stored
-    console.log('Document cookies:', document.cookie);
+        // If you want to see what cookies are currently stored
+        console.log('Document cookies:', document.cookie);
 
-    Swal.fire({
-      title: "Room added successfully",
-      icon: "success",
+        Swal.fire({
+          title: "Room added successfully",
+          icon: "success",
+        });
+      },
+      error: (err) => {
+        console.error('Add to cart error:', err);
+        Swal.fire('Error', 'Failed to add room to cart', 'error');
+      }
     });
-  },
-  error: (err) => {
-    console.error('Add to cart error:', err);
-    Swal.fire('Error', 'Failed to add room to cart', 'error');
   }
-});
+
+  // Add navigation method for Book Now button
+  navigateToCheckout(): void {
+    if (!this.availableParams.from || !this.availableParams.to) {
+      Swal.fire('Error', 'Please select dates first', 'error');
+      return;
+    }
+    
+    this.router.navigate(['/checkout']);
   }
 }

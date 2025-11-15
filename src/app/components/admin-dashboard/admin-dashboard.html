@@ -111,7 +111,7 @@
     <!-- Bookings Table -->
     <div class="col-xl-8 col-lg-7">
       <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center" >
           <h6 class="m-0 font-weight-bold text-primary">All Bookings</h6>
           <div>
             <span class="badge bg-primary me-2">{{ bookings.length }} Total</span>
@@ -134,9 +134,9 @@
             </button>
           </div>
 
-          <div *ngIf="!isBookingsLoading && bookings.length > 0" class="table-responsive">
-            <table class="table table-bordered table-hover">
-              <thead class="table-dark">
+          <div *ngIf="!isBookingsLoading && bookings.length > 0" class="table-responsive" >
+            <table class="table table-bordered table-hover" >
+              <thead class="table" >
                 <tr>
                   <th>ID</th>
                   <th>Room</th>

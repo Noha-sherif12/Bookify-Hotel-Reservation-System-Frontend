@@ -7,6 +7,14 @@
 }
 
 
+.btn-primary {
+  background-color: #ffba5a;
+  border-color: #ffba5a;
+  border-radius: 15px;
+}
+
+
+
 @font-face {
   font-family: Roboto ;
   src: url('/assets/fonts/Roboto/Roboto_Condensed-Regular.ttf');

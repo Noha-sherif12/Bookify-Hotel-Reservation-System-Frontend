@@ -1,4 +1,4 @@
-/* admin-dashboard.component.css */
+
 .card {
   border: none;
   border-radius: 0.5rem;
@@ -28,7 +28,7 @@
 }
 
 .border-left-warning {
-  border-left: 0.25rem solid #f6c23e !important;
+  border-left: 0.25rem solid #ffba5a !important;
 }
 
 .table th {

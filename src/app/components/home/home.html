@@ -44,13 +44,24 @@
           </p>
         </div>
         <div class="card-footer text-center">
-          <button  class="btn btn-success me-3" [class.disabled]="!r.isAvailable" (click)="addToCart(r)">
-            {{ r.isAvailable ? 'Add to cart' : 'Unavailable' }}
-          </button>
-            <button  class="btn btn-success" [class.disabled]="!r.isAvailable">
-            {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
-          </button>
-        </div>
+  <button class="btn me-3" 
+          [class.disabled]="!r.isAvailable" 
+          (click)="addToCart(r)"
+          [style.background-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+          [style.border-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+          style="color: white;">
+    {{ r.isAvailable ? 'Add to cart' : 'Unavailable' }}
+  </button>
+  
+  <button class="btn" 
+          [class.disabled]="!r.isAvailable" 
+          [style.background-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+          [style.border-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+          style="color: white;"
+          (click)="r.isAvailable ? navigateToCheckout() : null">
+    {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
+  </button>
+</div>
       </div>
     </div>
     }
