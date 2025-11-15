@@ -12,6 +12,18 @@
   border-color: #ffba5a;
   border-radius: 15px;
 }
+/* Override Bootstrap states */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: #e6a84f !important; /* Slightly darker for hover/active */
+  border-color: #e6a84f !important;
+ 
+}
 
 
 
