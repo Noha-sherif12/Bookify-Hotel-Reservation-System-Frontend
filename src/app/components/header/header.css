@@ -14,15 +14,21 @@
     margin-left: 25px;
 }
 
-/* .nav-item:hover{
-  background-color: white;
-  color: black;
-} */
+
 
 
 .cart{
   cursor: pointer;
   font-size: 30px;
+}
+
+.active-header{
+  border-radius: 15px;
+}
+
+.active-header:hover{
+background-color: #273238;
+
 }
 
 
