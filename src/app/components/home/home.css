@@ -1,7 +1,9 @@
 .roomTypes{
-    background-image: url('../../../assets/images/slider-1.jpg');
+    /* background-image: url('../../../assets/images/slider-1.jpg'); */
     background-size: cover;
-    color: white;
+    color: black;
+    text-align: center;
+    height: 150px;
 }
 
 
@@ -113,4 +115,7 @@
 .room:hover img{
   transform: scale(1.3);
 }
+
+
+
 

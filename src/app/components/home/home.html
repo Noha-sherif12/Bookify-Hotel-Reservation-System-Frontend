@@ -131,10 +131,10 @@
 
   <!-- Room Types Section -->
   @if (roomsTypes && roomsTypes.length > 0) {
-  <section class="room-types row g-3">
+  <section class="room-types row g-3 mt-3">
     @for (type of roomsTypes; track type.id) {
     <div class="col-md-4">
-      <div class="card h-100 shadow-sm roomTypes">
+      <div class="card  shadow-sm roomTypes">
         <div class="card-body">
           <p>{{type.imageUrl}}</p>
           <h5 class="card-title">{{ type.description }}</h5>

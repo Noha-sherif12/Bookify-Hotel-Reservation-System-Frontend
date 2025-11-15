@@ -3,70 +3,67 @@
     <p class="logo">Bookify</p>
   </div>
 
-
+  <!--
   <div class=" text-white cart mt-3">
 
     <i class="bi bi-cart " routerLink="/cart"></i>
-  </div>
+  </div> -->
 
   <!-- condition ngif display none, get from service username from login and  display it in header-->
- <nav class="navbar navbar-expand-lg navbar-dark ">
-  <div class="container-fluid">
+  <nav class="navbar navbar-expand-lg navbar-dark ">
+    <div class="container-fluid">
 
 
-    <!-- Hamburger Button -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <!-- Hamburger Button -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <!-- Collapsible Menu -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <!-- Collapsible Menu -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
 
-        <li class="nav-item">
-          <a class="nav-link text-white active-header" routerLink="/home" routerLinkActive="fw-bold">Home</a>
-        </li>
+          <li class="text-white cart me-2">
+            <i class="bi bi-cart " routerLink="/cart"></i>
+          </li>
 
-        <li class="nav-item">
-          <a class="nav-link text-white active-header" routerLink="/profile" routerLinkActive="fw-bold">Profile</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link text-white active-header" routerLink="/home" routerLinkActive="fw-bold">Home</a>
+          </li>
 
-        <li class="nav-item" *ngIf="!isUserLoggedIn">
-          <a class="nav-link text-white active-header" routerLink="/login" routerLinkActive="fw-bold">Login</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link text-white active-header" routerLink="/profile" routerLinkActive="fw-bold">Profile</a>
+          </li>
 
-        <li class="nav-item" *ngIf="!isUserLoggedIn">
-          <a class="nav-link text-white active-header" routerLink="/register" routerLinkActive="fw-bold">Register</a>
-        </li>
+          <li class="nav-item" *ngIf="!isUserLoggedIn">
+            <a class="nav-link text-white active-header" routerLink="/login" routerLinkActive="fw-bold">Login</a>
+          </li>
 
-        <li class="nav-item" *ngIf="isUserLoggedIn">
-          <span class="nav-link text-white active-header">Welcome, {{ username }}!</span>
-        </li>
+          <li class="nav-item" *ngIf="!isUserLoggedIn">
+            <a class="nav-link text-white active-header" routerLink="/register" routerLinkActive="fw-bold">Register</a>
+          </li>
 
-        <li class="nav-item" *ngIf="isUserLoggedIn">
-          <a class="nav-link text-white active-header" style="cursor:pointer" (click)="logout()">Logout</a>
-        </li>
+          <li class="nav-item" *ngIf="isUserLoggedIn">
+            <span class="nav-link text-white active-header">Welcome, {{ username }}!</span>
+          </li>
 
-        <li class="nav-item">
-          <a class="nav-link text-white active-header" routerLink="/Rooms" routerLinkActive="fw-bold">Rooms</a>
-        </li>
+          <li class="nav-item" *ngIf="isUserLoggedIn">
+            <a class="nav-link text-white active-header" style="cursor:pointer" (click)="logout()">Logout</a>
+          </li>
 
-        <li class="nav-item">
-          <a class="nav-link text-white active-header" routerLink="/bookings" routerLinkActive="fw-bold">Bookings</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link text-white active-header" routerLink="/Rooms" routerLinkActive="fw-bold">Rooms</a>
+          </li>
 
-      </ul>
+          <li class="nav-item">
+            <a class="nav-link text-white active-header" routerLink="/bookings" routerLinkActive="fw-bold">Bookings</a>
+          </li>
+
+        </ul>
+      </div>
+
     </div>
-
-  </div>
-</nav>
+  </nav>
 
 </div>
