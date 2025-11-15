@@ -12,7 +12,7 @@ import { IAddRoom } from '../../models/icart';
 
 @Component({
   selector: 'app-home',
-  standalone: true, 
+  standalone: true,
   imports: [CommonModule, FormsModule],
     templateUrl: './home.html',
   styleUrl: './home.css'
@@ -81,10 +81,10 @@ this._roomService.addBookingCart(cartData).subscribe({
   next: (res) => {
     console.log('Response:', res);
     console.log('Session cookies should be automatically handled by browser');
-    
+
     // If you want to see what cookies are currently stored
     console.log('Document cookies:', document.cookie);
-    
+
     Swal.fire({
       title: "Room added successfully",
       icon: "success",
