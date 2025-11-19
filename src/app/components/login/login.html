@@ -1,8 +1,8 @@
 <div class="container">
-  <form (submit)="onLogin(loginUserForm)" #loginUserForm="ngForm">
+  <form (submit)="onLogin(loginUserForm)" #loginUserForm="ngForm" class="w-50 m-auto">
     <div class="mb-3">
-      <label for="email" class="form-label text-white">Email Address</label>
-      <input #email="ngModel" [(ngModel)]="loginUser.email" type="email" name="email" class="form-control" id="email"
+      <label for="email" class="form-label text-white fw-bold">Email Address</label>
+      <input #email="ngModel" [(ngModel)]="loginUser.email" type="email" name="email" class="form-control rounded-5" id="email"
         aria-describedby="emailHelp" required>
       @if(email.invalid && email.touched){
       <div class="alert alert-danger" role="alert">
@@ -11,8 +11,8 @@
       }
     </div>
     <div class="mb-3">
-      <label for="password" class="form-label text-white">Password</label>
-      <input #password="ngModel" [(ngModel)]="loginUser.password" type="password" name="password" class="form-control"
+      <label for="password" class="form-label text-white fw-bold">Password</label>
+      <input #password="ngModel" [(ngModel)]="loginUser.password" type="password" name="password" class="form-control rounded-5 fw-bold"
         id="password" required>
       @if(password.invalid && password.touched){
       <div class="alert alert-danger" role="alert">
@@ -21,7 +21,7 @@
       }
     </div>
 
-    <button type="submit" [disabled]="loginUserForm.invalid" class="btn"
-      style="background-color: #2596be; border-color: #2596be; color: white;">Submit</button>
+    <button type="submit" [disabled]="loginUserForm.invalid" class="btn colored-button fw-bold"
+      style=" color: white;">Submit</button>
   </form>
 </div>

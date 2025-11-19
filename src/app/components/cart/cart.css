@@ -52,3 +52,22 @@
 .bi {
   font-size: 1.1rem;
 }
+
+
+.btn-primary {
+  background-color: #293339;
+
+  border-radius: 15px;
+}
+/* Override Bootstrap states */
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: white !important; /* Slightly darker for hover/active */
+  color: #293339;
+
+}
