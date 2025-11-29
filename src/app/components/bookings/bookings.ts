@@ -37,11 +37,11 @@ export class Bookings implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Check if there's a newly created booking passed from checkout via router state
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state && (navigation.extras.state as any)['newBooking']) {
-      const newBooking = (navigation.extras.state as any)['newBooking'];
-      this.newBookingHighlight = newBooking.id;
-      this.loggingService.info('New booking received from checkout (router state)', { bookingId: newBooking.id });
-      this.toastService.success('Booking created successfully!');
+    const state = navigation?.extras?.state as { newBooking?: any };
+    
+    if (state?.newBooking) {
+      const newBooking = state.newBooking;
+      this.handleNewBooking(newBooking);
     }
 
     // Also subscribe to BookingStateService for booking data
@@ -49,11 +49,7 @@ export class Bookings implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((booking) => {
         if (booking && booking.id) {
-          this.newBookingHighlight = booking.id as number;
-          this.loggingService.info('New booking received from checkout (booking state service)', { bookingId: booking.id });
-          if (!navigation?.extras?.state?.['newBooking']) {
-            this.toastService.success('Booking created successfully!');
-          }
+          this.handleNewBooking(booking);
         }
       });
 
@@ -66,14 +62,66 @@ export class Bookings implements OnInit, OnDestroy {
     this.bookingStateService.clearNewBooking();
   }
 
+  private handleNewBooking(booking: any): void {
+    // Create a proper booking object
+    const newBooking: IBookings = {
+      id: booking.id,
+      roomNumber: booking.roomNumber,
+      roomTypeName: booking.roomTypeName,
+      customerName: booking.customerName,
+      customerEmail: booking.customerEmail,
+      checkInDate: booking.checkInDate,
+      checkOutDate: booking.checkOutDate,
+      numberOfNights: booking.numberOfNights,
+      totalCost: booking.totalCost,
+      status: booking.status || 'Pending',
+      createdAt: booking.createdAt || new Date().toISOString()
+    };
+
+    // Check if this booking already exists to avoid duplicates
+    const existingIndex = this.bookings.findIndex(b => b.id === newBooking.id);
+    if (existingIndex === -1) {
+      // Add to the beginning of the array for immediate visibility
+      this.bookings.unshift(newBooking);
+      this.newBookingHighlight = newBooking.id;
+      this.updateBadgeCounts();
+      
+      this.loggingService.info('New booking added to list', { bookingId: newBooking.id });
+      this.toastService.success('New booking added successfully!');
+    }
+
+    // Reload from backend after a delay to get the actual persisted data
+    setTimeout(() => {
+      this.loadBookings();
+    }, 1000);
+  }
+
   loadBookings(): void {
     this.isLoading = true;
     this.bookingService.getAllBookings().subscribe({
       next: (res) => {
+        // Store current new booking ID before replacing the array
+        const currentHighlight = this.newBookingHighlight;
+        
+        // Replace the bookings array with data from backend
         this.bookings = res;
+        
+        // If we had a highlighted booking from checkout, make sure it stays in the list
+        if (currentHighlight) {
+          // Check if the highlighted booking exists in the new data
+          const existingBooking = this.bookings.find(b => b.id === currentHighlight);
+          if (!existingBooking) {
+            // The booking from checkout might not be in the backend yet
+            // We keep the highlight but don't add duplicate
+            this.loggingService.info('New booking not yet in backend', { bookingId: currentHighlight });
+          } else {
+            // Ensure the highlight remains
+            this.newBookingHighlight = currentHighlight;
+          }
+        }
+        
         this.updateBadgeCounts();
         this.loggingService.info('Bookings loaded successfully', { count: res.length });
-        this.toastService.success('Bookings loaded successfully');
         this.isLoading = false;
       },
       error: (err) => {
@@ -207,11 +255,19 @@ export class Bookings implements OnInit, OnDestroy {
           bookingId: booking.id,
           bookingData: booking
         });
-        this.toastService.info('Booking cancellation request submitted');
+        
+        // Update the booking status locally immediately
+        const bookingIndex = this.bookings.findIndex(b => b.id === booking.id);
+        if (bookingIndex !== -1) {
+          this.bookings[bookingIndex].status = 'Cancelled';
+          this.updateBadgeCounts();
+        }
+        
+        this.toastService.success('Booking cancelled successfully!');
         
         Swal.fire({
-          title: 'Request Submitted',
-          text: 'Your booking cancellation request has been submitted. You will receive a confirmation email shortly.',
+          title: 'Booking Cancelled',
+          text: 'Your booking has been cancelled successfully.',
           icon: 'success',
           confirmButtonColor: '#667eea'
         });
@@ -278,5 +334,24 @@ Receipt Generated:   ${new Date().toLocaleDateString('en-US', { year: 'numeric',
     
     this.loggingService.info('Receipt downloaded successfully', { bookingId: booking.id });
     this.toastService.success('Receipt downloaded successfully');
+  }
+
+  // Method to manually add a test booking (for testing purposes)
+  addTestBooking(): void {
+    const testBooking: IBookings = {
+      id: Math.floor(Math.random() * 10000) + 1000,
+      roomNumber: '101',
+      roomTypeName: 'Deluxe Room',
+      customerName: 'Test User',
+      customerEmail: 'test@example.com',
+      checkInDate: '2025-12-01',
+      checkOutDate: '2025-12-05',
+      numberOfNights: 4,
+      totalCost: 600,
+      status: 'Confirmed',
+      createdAt: new Date().toISOString()
+    };
+
+    this.handleNewBooking(testBooking);
   }
 }

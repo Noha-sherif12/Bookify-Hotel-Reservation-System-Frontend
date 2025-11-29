@@ -24,15 +24,16 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
 
-          <li class="text-white cart me-2">
-            <i class="bi bi-cart " routerLink="/cart"></i>
+         
+<li class="nav-item" *ngIf="isUserLoggedIn">
+            <span class="nav-link text-white active-header">Welcome, {{ username }}!</span>
           </li>
-
           <li class="nav-item">
             <a class="nav-link text-white active-header" routerLink="/home" routerLinkActive="fw-bold">Home</a>
           </li>
+          
 
-          <li class="nav-item" *ngIf="!isUserLoggedIn">
+          <li class="nav-item" *ngIf="isUserLoggedIn">
             <a class="nav-link text-white active-header" routerLink="/profile" routerLinkActive="fw-bold">Profile</a>
           </li>
 
@@ -45,21 +46,23 @@
           </li>
 
           <li class="nav-item" *ngIf="isUserLoggedIn">
-            <span class="nav-link text-white active-header">Welcome, {{ username }}!</span>
-          </li>
-
-          <li class="nav-item" *ngIf="isUserLoggedIn">
-            <a class="nav-link text-white active-header" style="cursor:pointer" (click)="logout()">Logout</a>
-          </li>
-
-          <li class="nav-item" *ngIf="isUserLoggedIn">
             <a class="nav-link text-white active-header" routerLink="/bookings" routerLinkActive="fw-bold">Bookings</a>
           </li>
+          <!-- Add this line after the Bookings link -->
+<li class="nav-item" *ngIf="isUserLoggedIn && userAuthSer.isAdmin()">
+    <a class="nav-link text-white active-header" routerLink="/admin/dashboard" routerLinkActive="fw-bold">Dashboard</a>
+</li>
            <li class="nav-item">
             <a class="nav-link text-white active-header" routerLink="/about" routerLinkActive="fw-bold">About</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-white active-header" routerLink="/Contact" routerLinkActive="fw-bold">Contact Us</a>
+          </li>
+          <li class="nav-item" *ngIf="isUserLoggedIn">
+            <a class="nav-link text-white active-header" style="cursor:pointer" (click)="logout()">Logout</a>
+          </li>
+           <li class="text-white cart me-2">
+            <i class="bi bi-cart " routerLink="/cart"></i>
           </li>
           
 

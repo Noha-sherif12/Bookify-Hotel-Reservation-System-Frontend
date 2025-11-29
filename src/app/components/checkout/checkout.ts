@@ -267,59 +267,68 @@ export class CheckoutComponent implements OnInit {
 
   // Show a Complete success page for testing
   private showCompleteSuccessPage(): void {
-    const bookingData = {
-      id: 12345,
-      roomNumber: this.cartItem?.roomNumber || '101',
-      roomTypeName: this.cartItem?.roomTypeName || 'Deluxe Room',
-      customerName: this.formData.fullName || 'Test User',
-      customerEmail: this.formData.email || 'test@example.com',
-      checkInDate: this.cartItem?.checkInDate || '2025-12-01',
-      checkOutDate: this.cartItem?.checkOutDate || '2025-12-05',
-      numberOfNights: this.cartItem?.numberOfNights || 4,
-      totalCost: this.cartItem?.totalCost || 600,
-      status: 'Confirmed',
-      createdAt: new Date().toISOString()
-    };
+  const bookingData = {
+    id: Math.floor(Math.random() * 10000) + 1000, // Generate a random ID for demo
+    roomNumber: this.cartItem?.roomNumber || '101',
+    roomTypeName: this.cartItem?.roomTypeName || 'Deluxe Room',
+    customerName: this.formData.fullName || 'Test User',
+    customerEmail: this.formData.email || 'test@example.com',
+    checkInDate: this.cartItem?.checkInDate || '2025-12-01',
+    checkOutDate: this.cartItem?.checkOutDate || '2025-12-05',
+    numberOfNights: this.cartItem?.numberOfNights || 4,
+    totalCost: this.cartItem?.totalCost || 600,
+    status: 'Confirmed',
+    createdAt: new Date().toISOString()
+  };
 
-    const CompleteResponse = {
-      message: 'Booking created and payment processed successfully! (Complete)',
-      booking: bookingData,
-      nextSteps: [
-        'Your booking is pending admin confirmation',
-        'You will receive a confirmation email once approved',
-        'You can cancel the booking before it is confirmed'
-      ]
-    };
-    this.toastService.success('Complete: Payment successful! Booking confirmed.');
-    Swal.fire({
-      title: 'Complete Success!',
-      html: `<div>
-        <p>Your booking has been confirmed! (Complete)</p>
-        <p><strong>${CompleteResponse.message}</strong></p>
-        <ul style="text-align: left; margin: 15px 0;">
-          ${CompleteResponse.nextSteps.map((step: string) => `<li>${step}</li>`).join('')}
-        </ul>
-        <hr />
-        <p><strong>Booking ID:</strong> ${bookingData.id}</p>
-        <p><strong>Room:</strong> ${bookingData.roomNumber} (${bookingData.roomTypeName})</p>
-        <p><strong>Guest:</strong> ${bookingData.customerName}</p>
-        <p><strong>Email:</strong> ${bookingData.customerEmail}</p>
-        <p><strong>Check-in:</strong> ${bookingData.checkInDate}</p>
-        <p><strong>Check-out:</strong> ${bookingData.checkOutDate}</p>
-        <p><strong>Nights:</strong> ${bookingData.numberOfNights}</p>
-        <p><strong>Total Cost:</strong> $${bookingData.totalCost}</p>
-        <p><strong>Status:</strong> ${bookingData.status}</p>
-      </div>`,
-      icon: 'success',
-      confirmButtonText: 'View My Bookings'
-    }).then(() => {
+  const completeResponse = {
+    message: 'Booking created and payment processed successfully! (Complete)',
+    booking: bookingData,
+    nextSteps: [
+      'Your booking is pending admin confirmation',
+      'You will receive a confirmation email once approved',
+      'You can cancel the booking before it is confirmed'
+    ]
+  };
+
+  this.toastService.success('Complete: Payment successful! Booking confirmed.');
+  
+  Swal.fire({
+    title: 'Complete Success!',
+    html: `<div>
+      <p>Your booking has been confirmed! (Complete)</p>
+      <p><strong>${completeResponse.message}</strong></p>
+      <ul style="text-align: left; margin: 15px 0;">
+        ${completeResponse.nextSteps.map((step: string) => `<li>${step}</li>`).join('')}
+      </ul>
+      <hr />
+      <p><strong>Booking ID:</strong> ${bookingData.id}</p>
+      <p><strong>Room:</strong> ${bookingData.roomNumber} (${bookingData.roomTypeName})</p>
+      <p><strong>Guest:</strong> ${bookingData.customerName}</p>
+      <p><strong>Email:</strong> ${bookingData.customerEmail}</p>
+      <p><strong>Check-in:</strong> ${bookingData.checkInDate}</p>
+      <p><strong>Check-out:</strong> ${bookingData.checkOutDate}</p>
+      <p><strong>Nights:</strong> ${bookingData.numberOfNights}</p>
+      <p><strong>Total Cost:</strong> $${bookingData.totalCost}</p>
+      <p><strong>Status:</strong> ${bookingData.status}</p>
+    </div>`,
+    icon: 'success',
+    confirmButtonText: 'View My Bookings',
+    showCancelButton: true,
+    cancelButtonText: 'Stay Here'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Store the booking data in the state service
       this.bookingStateService.setNewBooking(bookingData);
       this.loggingService.info('New booking data stored in state', { bookingId: bookingData.id });
+      
+      // Navigate to bookings page with the new booking data
       this.router.navigate(['/bookings'], {
         state: { newBooking: bookingData }
       });
-    });
-  }
+    }
+  });
+}
 
   private confirmBookingWithPayment(paymentMethodId: string): void {
     this.loggingService.info('Confirming booking with payment method', { paymentMethodId });

@@ -21,7 +21,7 @@ export class Header implements OnInit, OnDestroy{
   private authSubscription?: Subscription;
 
   constructor(
-    private userAuthSer: UserAuth,
+    public userAuthSer: UserAuth,
     private authStateService: AuthStateService
   ){
 

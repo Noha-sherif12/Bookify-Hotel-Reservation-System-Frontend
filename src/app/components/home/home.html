@@ -1,156 +1,168 @@
-<div class="main container">
-  <div class="home" data-aos="fade-down">
-    <p>Welcome To 5 <span class="fa fa-star text-warning"></span> Hotel</p>
-    <h1 class="heading">A Best Place To Stay</h1>
-  </div>
+<div class="main">
+  <!-- Hero Section like About Page -->
+  <section class="site-hero inner-page overlay" style="background-image: url(assets/images/hero_4.jpg)" data-stellar-background-ratio="0.5">
+    <div class="container">
+      <div class="row site-hero-inner justify-content-center align-items-center">
+        <div class="col-md-10 text-center" data-aos="fade">
+          <p class="welcome-text">Welcome To 5 <span class="fa fa-star text-warning"></span> Hotel</p>
+          <h1 class="heading mb-3">A Best Place To Stay</h1>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <div class="available-rooms" data-aos="fade-up" data-aos-delay="100">
-    <!-- Your existing date picker form -->
-    <div class="row g-3">
-      <div class="col-md-4">
-        <label for="checkIn" class="form-label">Check-In Date</label>
-        <input name="from" type="date" id="checkIn" class="form-control" [(ngModel)]="availableParams.from">
+  <div class="container">
+    <!-- Date Picker Section -->
+    <div class="available-rooms" data-aos="fade-up" data-aos-delay="100">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label for="checkIn" class="form-label">Check-In Date</label>
+          <input name="from" type="date" id="checkIn" class="form-control" [(ngModel)]="availableParams.from">
+        </div>
+        <div class="col-md-4">
+          <label for="checkOut" class="form-label">Check-Out Date</label>
+          <input name="to" type="date" id="checkOut" class="form-control" [(ngModel)]="availableParams.to">
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button class="btn btn-primary w-100" (click)="availableRoom()">
+            Search
+          </button>
+        </div>
       </div>
-      <div class="col-md-4">
-        <label for="checkOut" class="form-label">Check-Out Date</label>
-        <input name="to" type="date" id="checkOut" class="form-control" [(ngModel)]="availableParams.to">
+    </div>
+
+    <!-- Available Rooms Section -->
+    @if (availableRooms && availableRooms.length > 0) {
+    <section class="available-rooms row g-3 container" data-aos="fade-up" data-aos-delay="200">
+      <h2 class="mb-3">Available Rooms ({{ availableRooms.length }})</h2>
+      @for (r of availableRooms; track r.roomNumber; let i = $index) {
+      <div class="col-md-4" data-aos="zoom-in" [attr.data-aos-delay]="300 + (i * 100)">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Room {{ r.roomNumber }}</h5>
+            <p class="card-text">
+              <strong>Type:</strong> {{ r.roomTypeName }} <br>
+              <strong>Description:</strong> {{ r.description }} <br>
+              <strong>Price per Night:</strong> ${{ r.pricePerNight }}
+            </p>
+          </div>
+          <div class="card-footer text-center">
+            <button class="btn me-3" 
+                    [class.disabled]="!r.isAvailable" 
+                    (click)="addToCart(r)"
+                    [style.background-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+                    [style.border-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+                    style="color: white;">
+              {{ r.isAvailable ? 'Add to cart' : 'Unavailable' }}
+            </button>
+            <button class="btn" 
+                    [class.disabled]="!r.isAvailable" 
+                    [style.background-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+                    [style.border-color]="r.isAvailable ? '#294c57' : '#6c757d'"
+                    style="color: white;"
+                    (click)="r.isAvailable ? navigateToCheckout() : null">
+              {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="col-md-4 d-flex align-items-end">
-        <button class="btn btn-primary w-100" (click)="availableRoom()">
-          Search
+      }
+    </section>
+    }
+
+    <!-- Carousel Section -->
+    <div class="mt-5" data-aos="fade-up" data-aos-delay="100">
+      <div id="carouselExample" class="carousel slide w-75 m-auto" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="assets/images/slider-1.jpg" class="d-block w-100" alt="Slide 1">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/slider-2.jpg" class="d-block w-100" alt="Slide 2">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/slider-3.jpg" class="d-block w-100" alt="Slide 3">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- Available Rooms Section -->
-  @if (availableRooms && availableRooms.length > 0) {
-  <section class="available-rooms row g-3 container" data-aos="fade-up" data-aos-delay="200">
-    <h2 class="mb-3">Available Rooms ({{ availableRooms.length }})</h2>
-    @for (r of availableRooms; track r.roomNumber; let i = $index) {
-    <div class="col-md-4" data-aos="zoom-in" [attr.data-aos-delay]="300 + (i * 100)">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Room {{ r.roomNumber }}</h5>
-          <p class="card-text">
-            <strong>Type:</strong> {{ r.roomTypeName }} <br>
-            <strong>Description:</strong> {{ r.description }} <br>
-            <strong>Price per Night:</strong> ${{ r.pricePerNight }}
-          </p>
+    <!-- Room Types Showcase -->
+    <div class="room-description d-flex justify-content-center align-items-center m-4">
+      <div class="room m-2" data-aos="fade-right" data-aos-delay="100">
+        <div>
+          <img src="assets/images/slider-6.jpg" class="w-100" alt="room image"/>
         </div>
-        <div class="card-footer text-center">
-          <button class="btn me-3" 
-                  [class.disabled]="!r.isAvailable" 
-                  (click)="addToCart(r)"
-                  [style.background-color]="r.isAvailable ? '#294c57' : '#6c757d'"
-                  [style.border-color]="r.isAvailable ? '#294c57' : '#6c757d'"
-                  style="color: white;">
-            {{ r.isAvailable ? 'Add to cart' : 'Unavailable' }}
-          </button>
-          <button class="btn" 
-                  [class.disabled]="!r.isAvailable" 
-                  [style.background-color]="r.isAvailable ? '#294c57' : '#6c757d'"
-                  [style.border-color]="r.isAvailable ? '#294c57' : '#6c757d'"
-                  style="color: white;"
-                  (click)="r.isAvailable ? navigateToCheckout() : null">
-            {{ r.isAvailable ? 'Book Now' : 'Unavailable' }}
-          </button>
+        <div class="text-white text-center room-content">
+          <h3>Single Room</h3>
+          <p>90$ / PER NIGHT</p>
+        </div>
+      </div>
+      <div class="room m-2" data-aos="fade-up" data-aos-delay="200">
+        <div>
+          <img src="assets/images/slider-5.jpg" class="w-100" alt="room image"/>
+        </div>
+        <div class="text-white text-center room-content">
+          <h3>Family Room</h3>
+          <p>120$ / PER NIGHT</p>
+        </div>
+      </div>
+      <div class="room m-2" data-aos="fade-left" data-aos-delay="300">
+        <div>
+          <img src="assets/images/slider-4.jpg" class="w-100" alt="room image"/>
+        </div>
+        <div class="text-white text-center room-content">
+          <h3>Presidential Room</h3>
+          <p>250$ / PER NIGHT</p>
         </div>
       </div>
     </div>
+
+    <!-- Welcome Section -->
+    <div class="bg-welcome" data-aos="fade-up">
+      <div class="d-flex justify-content-center align-items-center container">
+        <div class="container" data-aos="fade-right">
+          <h2>Welcome!</h2>
+          <p>Experience luxury and comfort at Bookify Hotel, located in the beautiful Golden Beach on Egypt's stunning North Coast. Our 5-star hotel offers world-class amenities, breathtaking sea views, and exceptional service that will make your stay unforgettable.</p>
+        </div>
+        <div class="ms-5" data-aos="fade-left" data-aos-delay="200">
+          <img class="welcome-img" src="assets/images/correctpath.jpg" alt="Hero image">
+        </div>
+      </div>
+    </div>
+
+    <!-- Room Types Section -->
+    @if (roomsTypes && roomsTypes.length > 0) {
+    <section class="room-types row g-3 mt-3" data-aos="fade-up">
+      @for (type of roomsTypes; track type.id; let i = $index) {
+      <div class="col-md-4" data-aos="zoom-in" [attr.data-aos-delay]="100 + (i * 100)">
+        <div class="card shadow-sm roomTypes">
+          <div class="card-body">
+            <p>{{type.imageUrl}}</p>
+            <h5 class="card-title">{{ type.description }}</h5>
+            <p class="card-text">
+              <strong>ID:</strong> {{ type.id }} <br>
+              <strong>Price per Night:</strong> ${{ type.pricePerNight }}
+            </p>
+          </div>
+        </div>
+      </div>
+      }
+    </section>
+    } @else {
+    <section data-aos="fade-up">
+      <p>No room types found.</p>
+    </section>
     }
-  </section>
-  }
 
-  <div class="mt-5" data-aos="fade-up" data-aos-delay="100">
-    <div id="carouselExample" class="carousel slide w-75 m-auto" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="assets/images/slider-1.jpg" class="d-block w-100" alt="Slide 1">
-        </div>
-        <div class="carousel-item">
-          <img src="assets/images/slider-2.jpg" class="d-block w-100" alt="Slide 2">
-        </div>
-        <div class="carousel-item">
-          <img src="assets/images/slider-3.jpg" class="d-block w-100" alt="Slide 3">
-        </div>
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
+    <hr>
   </div>
-
-  <div class="room-description d-flex justify-content-center align-items-center m-4">
-    <div class="room m-2" data-aos="fade-right" data-aos-delay="100">
-      <div>
-        <img src="assets/images/slider-6.jpg" class="w-100" alt="room image"/>
-      </div>
-      <div class="text-white text-center room-content">
-        <h3>Single Room</h3>
-        <p>90$ / PER NIGHT</p>
-      </div>
-    </div>
-    <div class="room m-2" data-aos="fade-up" data-aos-delay="200">
-      <div>
-        <img src="assets/images/slider-5.jpg" class="w-100" alt="room image"/>
-      </div>
-      <div class="text-white text-center room-content">
-        <h3>Family Room</h3>
-        <p>120$ / PER NIGHT</p>
-      </div>
-    </div>
-    <div class="room m-2" data-aos="fade-left" data-aos-delay="300">
-      <div>
-        <img src="assets/images/slider-4.jpg" class="w-100" alt="room image"/>
-      </div>
-      <div class="text-white text-center room-content">
-        <h3>Presidential Room</h3>
-        <p>250$ / PER NIGHT</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-welcome" data-aos="fade-up">
-    <div class="d-flex justify-content-center align-items-center container">
-      <div class="container" data-aos="fade-right">
-        <h2>Welcome!</h2>
-        <p>Experience luxury and comfort at Bookify Hotel, located in the beautiful Golden Beach on Egypt's stunning North Coast. Our 5-star hotel offers world-class amenities, breathtaking sea views, and exceptional service that will make your stay unforgettable.</p>
-      </div>
-      <div class="ms-5" data-aos="fade-left" data-aos-delay="200">
-        <img class="welcome-img" src="assets/images/correctpath.jpg" alt="Hero image">
-      </div>
-    </div>
-  </div>
-
-  <!-- Room Types Section -->
-  @if (roomsTypes && roomsTypes.length > 0) {
-  <section class="room-types row g-3 mt-3" data-aos="fade-up">
-    @for (type of roomsTypes; track type.id; let i = $index) {
-    <div class="col-md-4" data-aos="zoom-in" [attr.data-aos-delay]="100 + (i * 100)">
-      <div class="card shadow-sm roomTypes">
-        <div class="card-body">
-          <p>{{type.imageUrl}}</p>
-          <h5 class="card-title">{{ type.description }}</h5>
-          <p class="card-text">
-            <strong>ID:</strong> {{ type.id }} <br>
-            <strong>Price per Night:</strong> ${{ type.pricePerNight }}
-          </p>
-        </div>
-      </div>
-    </div>
-    }
-  </section>
-  } @else {
-  <section data-aos="fade-up">
-    <p>No room types found.</p>
-  </section>
-  }
-
-  <hr>
 </div>

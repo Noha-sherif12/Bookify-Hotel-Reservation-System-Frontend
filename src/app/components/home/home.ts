@@ -46,7 +46,10 @@ export class Home implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.initScrollAnimations();
+    // Initialize animations after a short delay to ensure DOM is ready
+    setTimeout(() => {
+      this.initScrollAnimations();
+    }, 500);
   }
 
   ngOnDestroy(): void {
@@ -69,11 +72,14 @@ export class Home implements OnInit, AfterViewInit, OnDestroy {
   private handleScrollDirection(): void {
     const currentScrollY = window.scrollY;
     
-    document.querySelectorAll('[data-aos]').forEach(el => {
+    // Only apply scroll direction classes to elements that are not yet animated
+    document.querySelectorAll('[data-aos]:not(.aos-animate)').forEach(el => {
       if (currentScrollY < this.lastScrollY) {
+        // Scrolling up
         el.classList.add('aos-scroll-up');
         el.classList.remove('aos-scroll-down');
       } else {
+        // Scrolling down
         el.classList.add('aos-scroll-down');
         el.classList.remove('aos-scroll-up');
       }
@@ -85,9 +91,10 @@ export class Home implements OnInit, AfterViewInit, OnDestroy {
   private initScrollAnimations(): void {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
+        const element = entry.target as HTMLElement;
+        
         if (entry.isIntersecting) {
-          const element = entry.target as HTMLElement;
-          
+          // Element is in viewport - trigger animation
           if (element.classList.contains('aos-scroll-up')) {
             element.classList.add('aos-animate-up');
             element.classList.remove('aos-animate-down');
@@ -97,16 +104,24 @@ export class Home implements OnInit, AfterViewInit, OnDestroy {
           }
           
           element.classList.add('aos-animate');
+        } else {
+          // Element is out of viewport - reset animation state but keep content visible
+          // Only remove animation classes, don't reset opacity
+          element.classList.remove('aos-animate', 'aos-animate-up', 'aos-animate-down', 'aos-scroll-up', 'aos-scroll-down');
         }
       });
     }, {
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+      rootMargin: '0px 0px -10px 0px' // Reduced margin for better detection
     });
 
-    document.querySelectorAll('[data-aos]').forEach(el => {
-      this.observer.observe(el);
-    });
+    // Observe all elements with data-aos attribute
+    const animatedElements = document.querySelectorAll('[data-aos]');
+    if (animatedElements.length > 0) {
+      animatedElements.forEach(el => {
+        this.observer.observe(el);
+      });
+    }
   }
 
   availableRoom(): void {
@@ -118,6 +133,10 @@ export class Home implements OnInit, AfterViewInit, OnDestroy {
     this.roomService.getAvailableRooms(this.availableParams.from, this.availableParams.to).subscribe({
       next: (res) => {
         this.availableRooms = res;
+        // Re-initialize animations after new rooms are loaded
+        setTimeout(() => {
+          this.initScrollAnimations();
+        }, 100);
       },
       error: (err) => {
         console.log(err);
