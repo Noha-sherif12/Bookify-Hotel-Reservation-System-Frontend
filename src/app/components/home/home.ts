@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'; // Import Router
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
+import { Router } from '@angular/router';
 import { RoomsService } from '../../services/room-service';
 import { CommonModule } from '@angular/common';
 import { AvailableRooms, Roomtypes } from '../../models/iroom'
@@ -15,7 +15,7 @@ import { IAddRoom } from '../../models/icart';
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home implements OnInit{
+export class Home implements OnInit, AfterViewInit, OnDestroy {
   availableRooms: AvailableRooms[] = [];
   roomsTypes: Roomtypes[] = [];
   availableParams = {
@@ -24,12 +24,14 @@ export class Home implements OnInit{
   };
 
   selectedRoomId: number | null = null;
+  private observer!: IntersectionObserver;
+  private lastScrollY = 0;
+  private ticking = false;
 
-  // Add Router to constructor
   constructor(
     private roomService: RoomsService, 
     private _roomService: BookingRooms,
-    private router: Router // Inject Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -40,6 +42,70 @@ export class Home implements OnInit{
       error: (err) => {
         console.log(err)
       }
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.initScrollAnimations();
+  }
+
+  ngOnDestroy(): void {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    if (!this.ticking) {
+      requestAnimationFrame(() => {
+        this.handleScrollDirection();
+        this.ticking = false;
+      });
+      this.ticking = true;
+    }
+  }
+
+  private handleScrollDirection(): void {
+    const currentScrollY = window.scrollY;
+    
+    document.querySelectorAll('[data-aos]').forEach(el => {
+      if (currentScrollY < this.lastScrollY) {
+        el.classList.add('aos-scroll-up');
+        el.classList.remove('aos-scroll-down');
+      } else {
+        el.classList.add('aos-scroll-down');
+        el.classList.remove('aos-scroll-up');
+      }
+    });
+
+    this.lastScrollY = currentScrollY;
+  }
+
+  private initScrollAnimations(): void {
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const element = entry.target as HTMLElement;
+          
+          if (element.classList.contains('aos-scroll-up')) {
+            element.classList.add('aos-animate-up');
+            element.classList.remove('aos-animate-down');
+          } else {
+            element.classList.add('aos-animate-down');
+            element.classList.remove('aos-animate-up');
+          }
+          
+          element.classList.add('aos-animate');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    document.querySelectorAll('[data-aos]').forEach(el => {
+      this.observer.observe(el);
     });
   }
 
@@ -82,8 +148,6 @@ export class Home implements OnInit{
       next: (res) => {
         console.log('Response:', res);
         console.log('Session cookies should be automatically handled by browser');
-
-        // If you want to see what cookies are currently stored
         console.log('Document cookies:', document.cookie);
 
         Swal.fire({
@@ -98,7 +162,6 @@ export class Home implements OnInit{
     });
   }
 
-  // Add navigation method for Book Now button
   navigateToCheckout(): void {
     if (!this.availableParams.from || !this.availableParams.to) {
       Swal.fire('Error', 'Please select dates first', 'error');

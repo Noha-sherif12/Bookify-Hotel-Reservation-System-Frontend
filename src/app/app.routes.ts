@@ -10,6 +10,8 @@ import { Cart } from './components/cart/cart';
 import { CheckoutComponent } from './components/checkout/checkout';
 import { Bookings } from './components/bookings/bookings';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard';
+import { ContactUs } from './components/contact-us/contact-us';
+import { About } from './components/about/about';
 
 export const routes: Routes = [
   { path: '', redirectTo:'home', pathMatch:'full'},
@@ -21,6 +23,8 @@ export const routes: Routes = [
   { path: 'register', component: Register},
   { path: 'bookings', component: Bookings, canActivate:[authGuard]},
   { path: 'Rooms', component: Rooms},
+  { path: 'Contact', component: ContactUs},
+  { path: 'about', component: About},
   { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate:[authGuard]},
   { path: '**', component: NotFound}
 ];
