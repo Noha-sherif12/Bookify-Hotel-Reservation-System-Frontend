@@ -61,7 +61,7 @@
           <li class="nav-item" *ngIf="isUserLoggedIn">
             <a class="nav-link text-white active-header" style="cursor:pointer" (click)="logout()">Logout</a>
           </li>
-           <li class="text-white cart me-2">
+           <li class="text-white cart me-2" *ngIf="isUserLoggedIn">
             <i class="bi bi-cart " routerLink="/cart"></i>
           </li>
           

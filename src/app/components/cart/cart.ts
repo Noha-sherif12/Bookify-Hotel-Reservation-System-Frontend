@@ -54,13 +54,8 @@ export class Cart implements OnInit {
       },
       error: (err) => {
         console.error('❌ Cart Error Details:', err);
-        console.error('❌ Error Status:', err.status);
-        console.error('❌ Error Message:', err.message);
-        console.error('❌ Full Error:', err);
-        
         this.isLoading = false;
         this.errorDetails = `Status: ${err.status} - ${err.message}`;
-        
         this.toastService.error(`Failed to load cart: ${err.status} ${err.statusText}`);
       }
     });
@@ -76,15 +71,28 @@ export class Cart implements OnInit {
     this.router.navigate(['/checkout']);
   }
 
+  // FIXED: Added paymentMethodId parameter
   confirmBooking(): void {
+    if (!this.cartItem) {
+      this.toastService.warning('Your cart is empty');
+      return;
+    }
+    
     this.isLoading = true;
     this.errorDetails = '';
     
-    this._BookingRooms.confirmBookingCart().subscribe({
+    // Create payment data
+    const paymentData = {
+      paymentMethodId: 'pm_card_visa', // Use test payment method
+      totalAmount: this.cartItem.totalCost
+    };
+    
+    this._BookingRooms.confirmBookingCart(paymentData).subscribe({
       next: (response) => {
         console.log('✅ Booking confirmed:', response);
         this.isLoading = false;
         this.toastService.success('Booking confirmed successfully!');
+        
         Swal.fire({
           title: 'Success!',
           text: 'Your booking has been confirmed',

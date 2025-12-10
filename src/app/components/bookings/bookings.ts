@@ -12,9 +12,10 @@ import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-bookings',
+  standalone: true, // Add this if it's a standalone component
   imports: [CommonModule],
-  templateUrl: './bookings.html',
-  styleUrl: './bookings.css'
+  templateUrl: './bookings.html', // Correct template path
+  styleUrl: './bookings.css' // Correct style path
 })
 export class Bookings implements OnInit, OnDestroy {
   bookings: IBookings[] = [];
@@ -334,24 +335,5 @@ Receipt Generated:   ${new Date().toLocaleDateString('en-US', { year: 'numeric',
     
     this.loggingService.info('Receipt downloaded successfully', { bookingId: booking.id });
     this.toastService.success('Receipt downloaded successfully');
-  }
-
-  // Method to manually add a test booking (for testing purposes)
-  addTestBooking(): void {
-    const testBooking: IBookings = {
-      id: Math.floor(Math.random() * 10000) + 1000,
-      roomNumber: '101',
-      roomTypeName: 'Deluxe Room',
-      customerName: 'Test User',
-      customerEmail: 'test@example.com',
-      checkInDate: '2025-12-01',
-      checkOutDate: '2025-12-05',
-      numberOfNights: 4,
-      totalCost: 600,
-      status: 'Confirmed',
-      createdAt: new Date().toISOString()
-    };
-
-    this.handleNewBooking(testBooking);
   }
 }

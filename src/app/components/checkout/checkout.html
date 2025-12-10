@@ -3,7 +3,7 @@
     <!-- Left Column: Order Summary -->
     <div class="col-lg-4 mb-4">
       <div class="card shadow rounded-lg sticky-top" style="top: 20px;">
-        <div class="card-header text-white">
+        <div class="card-header bg-primary text-white">
           <h5 class="mb-0"><i class="bi bi-receipt me-2"></i>Order Summary</h5>
         </div>
         <div class="card-body">
@@ -59,6 +59,7 @@
               <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
               </div>
+              <p class="mt-2 text-muted">Loading order summary...</p>
             </div>
           }
         </div>
@@ -83,6 +84,9 @@
           <form (ngSubmit)="processPayment()">
             <!-- Personal Information Section -->
             <div class="mb-4">
+              <h6 class="mb-3 text-primary">
+                <i class="bi bi-person me-2"></i>Personal Information
+              </h6>
               
               <div class="mb-3">
                 <label for="fullName" class="form-label">Full Name</label>
@@ -125,7 +129,10 @@
 
             <!-- Card Information Section -->
             <div class="mb-4">
-              
+              <h6 class="mb-3 text-primary">
+                <i class="bi bi-credit-card me-2"></i>Payment Information
+              </h6>
+
               <div class="mb-3">
                 <label for="cardholderName" class="form-label">Cardholder Name</label>
                 <input 
@@ -138,36 +145,34 @@
                   required>
               </div>
 
-              <!-- Test Card Input for Complete Payment Mode -->
-              @if (useCompletePayment) {
-                <div class="mb-3 p-3 bg-warning bg-opacity-10 border border-warning rounded">
-                  <small class="text-warning d-block mb-2">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    <strong>Complete Payment</strong>
-                  </small>
-                  <label for="testCard" class="form-label">Test Card Number</label>
-                  <input 
-                    type="text" 
-                    class="form-control" 
-                    id="testCard"
-                    placeholder="4242 4242 4242 4242"
-                    [(ngModel)]="testCard"
-                    name="testCard"
-                    required>
-                  <small class="text-muted d-block mt-2">
-                    Use: <strong>4242 4242 4242 4242</strong> | Any future expiry date | Any CVC
-                  </small>
-                </div>
-              }
+              <!-- Real Stripe Card Element -->
+              <div class="mb-3">
+                <label for="card-element" class="form-label">Card Details</label>
+                <div id="card-element" class="form-control p-3" style="height: 45px; border: 1px solid #ced4da;"></div>
+                <div id="card-errors" class="text-danger mt-2 small" role="alert"></div>
+              </div>
+            </div>
 
-              <!-- Real Stripe Card Element (Hidden in Complete Mode) -->
-              @if (!useCompletePayment) {
-                <div class="mb-3">
-                  <label for="card-element" class="form-label">Card Details</label>
-                  <div id="card-element" class="form-control p-3" style="height: 45px; border: 1px solid #ced4da;"></div>
-                  <div id="card-errors" class="text-danger mt-2" role="alert"></div>
-                </div>
-              }
+            <!-- Test Mode Section -->
+            <div class="mt-4 p-3 bg-light rounded border">
+              <small class="text-muted d-block mb-2">
+                <i class="bi bi-info-circle me-1"></i>
+                <strong>Test Mode</strong>
+              </small>
+              <p class="mb-2 small">For testing, you can use:</p>
+              <ul class="small">
+                <li><strong>Card:</strong> 4242 4242 4242 4242</li>
+                <li><strong>Expiry:</strong> Any future date</li>
+                <li><strong>CVC:</strong> Any 3 digits</li>
+              </ul>
+              <button 
+                type="button" 
+                class="btn btn-sm btn-outline-warning mt-2"
+                (click)="testWithPmCardVisa()"
+                [disabled]="isProcessing">
+                <i class="bi bi-lightning-charge me-1"></i>
+                Quick Test with pm_card_visa
+              </button>
             </div>
 
             <hr class="my-4">
@@ -177,14 +182,14 @@
               <button 
                 type="submit" 
                 class="btn btn-success btn-lg"
-                [disabled]="isProcessing"
+                [disabled]="isProcessing || isLoading"
                 id="submit-button">
                 @if (isProcessing) {
                   <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                   <span>Processing Payment...</span>
                 } @else {
                   <i class="bi bi-check-circle me-2"></i>
-                  <span>Complete Payment - ${{ orderSummary?.totalAmount }}</span>
+                  <span>Complete Payment - ${{ orderSummary?.totalAmount || '0' }}</span>
                 }
               </button>
 

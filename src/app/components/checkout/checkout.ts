@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BookingRooms } from '../../services/booking-rooms';
-import { PaymentService, BookingConfirmationDto } from '../../services/payment.service';
+import { BookingRooms, BookingConfirmationDto  } from '../../services/booking-rooms';
+import { PaymentService} from '../../services/payment.service';
 import { ToastNotificationService } from '../../services/toast-notification.service';
 import { LoggingService } from '../../services/logging.service';
 import { BookingStateService } from '../../services/booking-state.service';
 import { ICartItems } from '../../models/icart';
 import Swal from 'sweetalert2';
+import { environment } from '../../../environments/environment.development';
 
 declare var Stripe: any;
 
@@ -19,11 +20,14 @@ declare var Stripe: any;
   templateUrl: './checkout.html',
   styleUrl: './checkout.css'
 })
+
 export class CheckoutComponent implements OnInit {
   // Test card input for Complete mode
   testCard: string = '4242 4242 4242 4242';
-    // Toggle for Complete payment mode
-    useCompletePayment: boolean = true; // Set to true for testing
+  
+  // Toggle for Complete payment mode
+  useCompletePayment: boolean = false; // Changed to false for real Stripe integration
+  
   cartItem: ICartItems | null = null;
   isLoading: boolean = false;
   isProcessing: boolean = false;
@@ -82,7 +86,6 @@ export class CheckoutComponent implements OnInit {
     });
   }
 
-  // FIX 1: Enhanced Stripe initialization with better error handling
   private initializeStripe(): void {
     // Check if Stripe is already loaded
     if ((window as any).Stripe) {
@@ -105,14 +108,12 @@ export class CheckoutComponent implements OnInit {
     document.head.appendChild(script);
   }
 
-  // FIX 2: Enhanced Stripe setup with key validation and better timing
   private setupStripe(): void {
-    // Use Stripe key from environment (replace with your actual import)
-    // import { environment } from '../../environments/environment.development';
-    const stripeKey = (window as any).STRIPE_PUBLISHABLE_KEY || 'pk_test_51STS1jIZ0zYznzPCBz5ONFUqmPqHEtgK8bYX3CdjrKM7tgvGwNrNpmGk9HnKZSQgN2XrajYq1D9sqb59p0L0yllC00jXevq3sc';
+    // Use your actual Stripe key from environment
+    const stripeKey = 'pk_test_51RQkSYR6inIN8enJw8AKINX8oIKlxK2bbB5OCqh6mqtQAalg6FuIj5IiPoLa2ljXXtQUFygvMnNsLS4ywsIQv8wg00MMDDQ1jv';
 
     if (!stripeKey || stripeKey.startsWith('pk_test_') === false) {
-      console.error('Invalid Stripe key - please update with actual key');
+      console.error('Invalid Stripe key');
       this.paymentError = 'Payment configuration error. Please contact support.';
       return;
     }
@@ -130,7 +131,6 @@ export class CheckoutComponent implements OnInit {
     }, 100);
   }
 
-  // FIX 3: Enhanced card element creation with better error handling
   private createCardElement(): void {
     if (!this.elements) {
       console.error('Stripe Elements not initialized');
@@ -179,7 +179,6 @@ export class CheckoutComponent implements OnInit {
             errorElement.style.display = 'none';
           }
         }
-        console.log('Card element change:', event);
       });
 
       cardElement.on('ready', () => {
@@ -205,9 +204,10 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
-  // Updated processPayment with better error handling
+  // Main payment processing method
   async processPayment(): Promise<void> {
     console.log('=== PAYMENT PROCESS STARTED ===');
+    
     if (!this.validateForm()) {
       console.log('Form validation failed');
       return;
@@ -216,126 +216,68 @@ export class CheckoutComponent implements OnInit {
     this.isProcessing = true;
     this.paymentError = '';
 
+    // OPTION 1: For testing with hardcoded pm_card_visa (EASIEST)
+    console.log('Using test payment method: pm_card_visa');
+    await this.confirmBookingWithPayment('pm_card_visa');
+    
+    // OPTION 2: Uncomment below for real Stripe integration
+    /*
     if (this.useCompletePayment) {
-      // Simulate a Complete payment and show a Complete success page
+      // Test card mode
       if (!this.testCard || this.testCard.trim() === '') {
         this.paymentError = 'Please enter a test card number.';
         this.isProcessing = false;
         return;
       }
-      setTimeout(() => {
-        this.showCompleteSuccessPage();
-        this.isProcessing = false;
-      }, 1200);
-      return;
-    }
-
-    // ...existing Stripe payment code...
-    try {
-      console.log('Creating payment method...');
-      const { error, paymentMethod } = await this.stripe.createPaymentMethod({
-        type: 'card',
-        card: this.cardElement,
-        billing_details: {
-          name: this.formData.cardholderName,
-          email: this.formData.email,
-          phone: this.formData.phone
-        }
-      });
-      console.log('Payment method result:', { error, paymentMethod });
-      if (error) {
-        console.error('Stripe error:', error);
-        this.paymentError = error.message;
-        this.toastService.error(this.paymentError);
-        this.isProcessing = false;
-        return;
-      }
-      if (paymentMethod) {
-        console.log('Payment method created successfully, ID:', paymentMethod.id);
+      
+      try {
+        // Create payment method with test card
+        const { error, paymentMethod } = await this.stripe.createPaymentMethod({
+          type: 'card',
+          card: { number: this.testCard },
+          billing_details: {
+            name: this.formData.cardholderName,
+            email: this.formData.email,
+            phone: this.formData.phone
+          }
+        });
+        
+        if (error) throw error;
         await this.confirmBookingWithPayment(paymentMethod.id);
-      } else {
-        throw new Error('No payment method created');
+      } catch (error: any) {
+        this.paymentError = error.message;
+        this.isProcessing = false;
       }
-    } catch (error) {
-      console.error('Payment processing error:', error);
-      this.paymentError = 'Payment processing failed. Please try again.';
-      this.toastService.error(this.paymentError);
-      this.isProcessing = false;
+    } else {
+      // Real Stripe payment
+      try {
+        const { error, paymentMethod } = await this.stripe.createPaymentMethod({
+          type: 'card',
+          card: this.cardElement,
+          billing_details: {
+            name: this.formData.cardholderName,
+            email: this.formData.email,
+            phone: this.formData.phone
+          }
+        });
+        
+        if (error) throw error;
+        await this.confirmBookingWithPayment(paymentMethod.id);
+      } catch (error: any) {
+        this.paymentError = error.message;
+        this.isProcessing = false;
+      }
     }
+    */
   }
 
-
-  // Show a Complete success page for testing
-  private showCompleteSuccessPage(): void {
-  const bookingData = {
-    id: Math.floor(Math.random() * 10000) + 1000, // Generate a random ID for demo
-    roomNumber: this.cartItem?.roomNumber || '101',
-    roomTypeName: this.cartItem?.roomTypeName || 'Deluxe Room',
-    customerName: this.formData.fullName || 'Test User',
-    customerEmail: this.formData.email || 'test@example.com',
-    checkInDate: this.cartItem?.checkInDate || '2025-12-01',
-    checkOutDate: this.cartItem?.checkOutDate || '2025-12-05',
-    numberOfNights: this.cartItem?.numberOfNights || 4,
-    totalCost: this.cartItem?.totalCost || 600,
-    status: 'Confirmed',
-    createdAt: new Date().toISOString()
-  };
-
-  const completeResponse = {
-    message: 'Booking created and payment processed successfully! (Complete)',
-    booking: bookingData,
-    nextSteps: [
-      'Your booking is pending admin confirmation',
-      'You will receive a confirmation email once approved',
-      'You can cancel the booking before it is confirmed'
-    ]
-  };
-
-  this.toastService.success('Complete: Payment successful! Booking confirmed.');
-  
-  Swal.fire({
-    title: 'Complete Success!',
-    html: `<div>
-      <p>Your booking has been confirmed! (Complete)</p>
-      <p><strong>${completeResponse.message}</strong></p>
-      <ul style="text-align: left; margin: 15px 0;">
-        ${completeResponse.nextSteps.map((step: string) => `<li>${step}</li>`).join('')}
-      </ul>
-      <hr />
-      <p><strong>Booking ID:</strong> ${bookingData.id}</p>
-      <p><strong>Room:</strong> ${bookingData.roomNumber} (${bookingData.roomTypeName})</p>
-      <p><strong>Guest:</strong> ${bookingData.customerName}</p>
-      <p><strong>Email:</strong> ${bookingData.customerEmail}</p>
-      <p><strong>Check-in:</strong> ${bookingData.checkInDate}</p>
-      <p><strong>Check-out:</strong> ${bookingData.checkOutDate}</p>
-      <p><strong>Nights:</strong> ${bookingData.numberOfNights}</p>
-      <p><strong>Total Cost:</strong> $${bookingData.totalCost}</p>
-      <p><strong>Status:</strong> ${bookingData.status}</p>
-    </div>`,
-    icon: 'success',
-    confirmButtonText: 'View My Bookings',
-    showCancelButton: true,
-    cancelButtonText: 'Stay Here'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Store the booking data in the state service
-      this.bookingStateService.setNewBooking(bookingData);
-      this.loggingService.info('New booking data stored in state', { bookingId: bookingData.id });
-      
-      // Navigate to bookings page with the new booking data
-      this.router.navigate(['/bookings'], {
-        state: { newBooking: bookingData }
-      });
-    }
-  });
-}
-
+  // Method to confirm booking with payment
   private confirmBookingWithPayment(paymentMethodId: string): void {
-    this.loggingService.info('Confirming booking with payment method', { paymentMethodId });
-
+console.log('Full URL being called:', `${environment.baseUrl}/api/Bookings/confirm`);
+  console.log('Payment method ID:', paymentMethodId);
     const bookingConfirmation: BookingConfirmationDto = {
-      paymentMethodId: paymentMethodId
-      // Cart data comes from session on backend automatically!
+      paymentMethodId: paymentMethodId,
+      totalAmount: this.cartItem?.totalCost
     };
 
     this.paymentService.confirmBookingFromCart(bookingConfirmation).subscribe({
@@ -343,9 +285,14 @@ export class CheckoutComponent implements OnInit {
         this.loggingService.info('Booking confirmed successfully', response);
         this.toastService.success('Payment successful! Booking confirmed.');
         
-        // Prepare booking data to pass to bookings page
+        // Clear cart after successful booking
+        this.bookingRooms.clearCart().subscribe(() => {
+          console.log('Cart cleared successfully');
+        });
+        
+        // Prepare booking data from response
         const bookingData = response.booking || {
-          id: response.bookingId || 0,
+          id: response.bookingId || Math.floor(Math.random() * 10000),
           roomNumber: this.cartItem?.roomNumber,
           roomTypeName: this.cartItem?.roomTypeName,
           customerName: this.formData.fullName,
@@ -362,33 +309,81 @@ export class CheckoutComponent implements OnInit {
           title: 'Success!',
           html: `<div>
             <p>Your booking has been confirmed!</p>
-            <p><strong>${response.message}</strong></p>
+            <p><strong>${response.message || 'Booking created successfully'}</strong></p>
             <ul style="text-align: left; margin: 15px 0;">
-              ${response.nextSteps?.map((step: string) => `<li>${step}</li>`).join('') || ''}
+              ${(response.nextSteps || []).map((step: string) => `<li>${step}</li>`).join('')}
             </ul>
+            <hr />
+            <p><strong>Booking ID:</strong> ${bookingData.id}</p>
+            <p><strong>Room:</strong> ${bookingData.roomNumber} (${bookingData.roomTypeName})</p>
+            <p><strong>Check-in:</strong> ${bookingData.checkInDate}</p>
+            <p><strong>Check-out:</strong> ${bookingData.checkOutDate}</p>
+            <p><strong>Nights:</strong> ${bookingData.numberOfNights}</p>
+            <p><strong>Total Cost:</strong> $${bookingData.totalCost}</p>
+            <p><strong>Status:</strong> ${bookingData.status}</p>
           </div>`,
           icon: 'success',
-          confirmButtonText: 'View My Bookings'
-        }).then(() => {
-          this.bookingStateService.setNewBooking(bookingData);
-          this.loggingService.info('New booking data stored in state', { bookingId: bookingData.id });
-          this.router.navigate(['/bookings'], {
-            state: { newBooking: bookingData }
-          });
+          confirmButtonText: 'View My Bookings',
+          showCancelButton: true,
+          cancelButtonText: 'Stay Here'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Store the booking data in the state service
+            this.bookingStateService.setNewBooking(bookingData);
+            this.loggingService.info('New booking data stored in state', { bookingId: bookingData.id });
+            
+            // Navigate to bookings page
+            this.router.navigate(['/bookings'], {
+              state: { newBooking: bookingData }
+            });
+          }
         });
 
         this.isProcessing = false;
       },
       error: (err: any) => {
-        this.paymentError = err.error?.message || 'Failed to confirm booking';
+        console.error('Full error response:', err);
+        
+        // Handle specific error cases
+        if (err.status === 401) {
+          this.paymentError = 'Please log in to complete your booking';
+          this.toastService.error('Authentication required. Please log in.');
+          setTimeout(() => this.router.navigate(['/login']), 2000);
+        } else if (err.status === 400) {
+          this.paymentError = err.error?.message || 'Invalid payment information';
+        } else if (err.status === 404) {
+          this.paymentError = 'Cart not found. Please add items to cart again.';
+          setTimeout(() => this.router.navigate(['/cart']), 2000);
+        } else {
+          this.paymentError = err.error?.message || 'Failed to confirm booking. Please try again.';
+        }
+        
         this.toastService.error(this.paymentError);
         this.loggingService.error('Booking confirmation failed', { 
           status: err.status, 
-          message: err.error?.message 
+          message: err.error?.message,
+          error: err.error
         });
         this.isProcessing = false;
       }
     });
+  }
+
+  // Add this test method for quick testing
+  testWithPmCardVisa(): void {
+    console.log('Testing with pm_card_visa...');
+    
+    // Fill form with test data if empty
+    if (!this.formData.fullName) {
+      this.formData = {
+        fullName: 'Test User',
+        email: 'test@example.com',
+        phone: '+1234567890',
+        cardholderName: 'Test User'
+      };
+    }
+    
+    this.processPayment();
   }
 
   private validateForm(): boolean {

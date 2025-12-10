@@ -39,6 +39,25 @@
     font-size: 40px;
   }
 }
+.reviews-section .review-card {
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.reviews-section .review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.review-stars {
+  color: #f4c150; /* Gold color for stars */
+  font-size: 20px;
+}
+
+.review-name {
+  font-weight: bold;
+  font-size: 18px;
+}
 
 /* Breadcrumbs */
 .about-page .custom-breadcrumbs {

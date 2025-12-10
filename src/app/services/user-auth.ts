@@ -56,7 +56,58 @@ export class UserAuth {
   const roles = user?.roles || [];
   return roles.includes('Admin');
 }
-
+// Add to UserAuth service
+decodeToken(): any {
+  const token = this.getToken();
+  if (!token) {
+    console.log('❌ No token found');
+    return null;
+  }
+  
+  try {
+    // JWT tokens have 3 parts: header.payload.signature
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.log('❌ Invalid token format - not a JWT');
+      return null;
+    }
+    
+    // Decode the payload (middle part)
+    const payload = JSON.parse(atob(parts[1]));
+    console.log('🔑 TOKEN DEBUG INFO:');
+    console.log('🔑 Full token (first 50 chars):', token.substring(0, 50) + '...');
+    console.log('🔑 Token payload:', payload);
+    
+    // Check for specific claims
+    console.log('🔑 Available claims:');
+    Object.keys(payload).forEach(key => {
+      console.log(`  ${key}:`, payload[key]);
+    });
+    
+    // Check for common user ID claims
+    console.log('🔑 Looking for user ID in claims:');
+    console.log('  sub (what backend expects):', payload.sub);
+    console.log('  nameid:', payload.nameid);
+    console.log('  userId:', payload.userId);
+    console.log('  id:', payload.id);
+    console.log('  unique_name:', payload.unique_name);
+    
+    // Check expiration
+    if (payload.exp) {
+      const expiryDate = new Date(payload.exp * 1000);
+      const now = new Date();
+      const isExpired = expiryDate < now;
+      console.log('🔑 Token expiry:', expiryDate.toISOString());
+      console.log('🔑 Current time:', now.toISOString());
+      console.log('🔑 Token expired?', isExpired);
+    }
+    
+    return payload;
+  } catch (error) {
+    console.error('❌ Error decoding token:', error);
+    return null;
+  }
+}
   logout(): void {
     try {
       localStorage.removeItem(this.TOKEN_KEY);
